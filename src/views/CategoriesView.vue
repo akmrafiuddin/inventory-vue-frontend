@@ -165,157 +165,361 @@ onMounted(() => {
 </script>
 
 <template>
-  <div>
-    <div class="mb-4 flex items-center justify-between">
-      <h2 class="text-xl font-semibold">Categories</h2>
-      <button
-        v-if="auth.canManage"
-        @click="openCreate"
-        class="rounded bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700"
-      >
-        New category
-      </button>
-    </div>
-
-    <div class="mb-4 flex flex-wrap items-center gap-3">
-      <input
-        v-model="search"
-        type="text"
-        aria-label="Search categories"
-        placeholder="Search categories..."
-        class="w-full max-w-xs rounded border border-gray-300 bg-white px-3 py-2 text-sm"
-      />
-      <label class="flex items-center gap-2 text-sm text-gray-700">
-        <input v-model="showDeleted" type="checkbox" class="h-4 w-4 rounded border-gray-300" />
-        Show deleted
-      </label>
-    </div>
-
-    <p v-if="pageError" class="mb-4 rounded bg-red-50 px-3 py-2 text-sm text-red-700">
-      {{ pageError }}
-    </p>
-
-    <div class="overflow-x-auto rounded-lg bg-white shadow">
-      <table class="w-full text-left text-sm">
-        <thead class="border-b bg-gray-50 text-gray-600">
-          <tr>
-            <th scope="col" class="px-4 py-3">Name</th>
-            <th scope="col" class="px-4 py-3">Parent</th>
-            <th scope="col" class="px-4 py-3">Products</th>
-            <th scope="col" class="px-4 py-3 text-right">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-if="loading">
-            <td colspan="4" class="px-4 py-6 text-center text-gray-500">Loading...</td>
-          </tr>
-          <tr v-else-if="!items.length">
-            <td colspan="4" class="px-4 py-6 text-center text-gray-500">No categories found.</td>
-          </tr>
-          <tr v-else v-for="c in items" :key="c.id" class="border-b last:border-0">
-            <td class="px-4 py-3 font-medium">{{ displayName(c.name) }}</td>
-            <td class="px-4 py-3 text-gray-600">{{ c.parent?.name ?? '-' }}</td>
-            <td class="px-4 py-3 text-gray-600">{{ c.products_count }}</td>
-            <td class="px-4 py-3 text-right">
-              <template v-if="auth.canManage">
-                <template v-if="showDeleted">
-                  <button @click="restoreCategory(c)" class="mr-3 text-green-600 hover:underline">
-                    Restore
-                  </button>
-                  <button @click="forceDeleteCategory(c)" class="text-red-600 hover:underline">
-                    Delete forever
-                  </button>
-                </template>
-                <template v-else>
-                  <button @click="openEdit(c)" class="mr-3 text-blue-600 hover:underline">
-                    Edit
-                  </button>
-                  <button @click="remove(c)" class="text-red-600 hover:underline">Delete</button>
-                </template>
-              </template>
-              <span v-else class="text-gray-400">-</span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div v-if="meta && meta.last_page > 1" class="mt-4 flex items-center justify-between text-sm">
-      <span class="text-gray-600"
-        >Page {{ meta.current_page }} of {{ meta.last_page }} ({{ meta.total }} total)</span
-      >
-      <div class="flex gap-2">
+  <div class="space-y-6">
+    <!-- Header -->
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div>
+        <h1 class="text-xl font-bold tracking-tight text-zinc-900 sm:text-2xl">Categories</h1>
+        <p class="mt-0.5 text-xs text-zinc-500 sm:text-sm">
+          Organize products into hierarchical taxonomies and departments
+        </p>
+      </div>
+      <div v-if="auth.canManage" class="flex items-center gap-2">
         <button
-          :disabled="meta.current_page <= 1"
-          @click="go(meta.current_page - 1)"
-          class="rounded border bg-white px-3 py-1 disabled:opacity-50"
+          @click="openCreate"
+          class="inline-flex items-center gap-2 rounded-xl bg-zinc-900 px-3.5 py-2 text-xs font-semibold text-white shadow-2xs hover:bg-zinc-800 transition-colors cursor-pointer"
         >
-          Previous
-        </button>
-        <button
-          :disabled="meta.current_page >= meta.last_page"
-          @click="go(meta.current_page + 1)"
-          class="rounded border bg-white px-3 py-1 disabled:opacity-50"
-        >
-          Next
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 4v16m8-8H4"
+            />
+          </svg>
+          New category
         </button>
       </div>
     </div>
 
-    <!-- create / edit modal -->
+    <!-- Filters & Search Toolbar -->
+    <div class="rounded-2xl border border-zinc-200/80 bg-white p-3 shadow-2xs">
+      <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div class="relative flex-1 max-w-md">
+          <svg
+            class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+            />
+          </svg>
+          <input
+            v-model="search"
+            type="text"
+            aria-label="Search categories"
+            placeholder="Search categories..."
+            class="w-full rounded-xl border border-zinc-200 bg-zinc-50/50 pl-9 pr-3.5 py-2 text-xs sm:text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-900 focus:bg-white focus:outline-none focus:ring-1 focus:ring-zinc-900 shadow-2xs transition-all"
+          />
+        </div>
+        <label class="flex items-center gap-2 text-xs sm:text-sm text-zinc-600 cursor-pointer">
+          <input
+            v-model="showDeleted"
+            type="checkbox"
+            class="h-4 w-4 rounded border-zinc-300 text-zinc-900 focus:ring-zinc-900"
+          />
+          <span>Show deleted items</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Error Alert -->
+    <div
+      v-if="pageError"
+      class="rounded-xl border border-rose-200 bg-rose-50/80 p-4 text-xs sm:text-sm text-rose-800 flex items-center justify-between"
+    >
+      <div class="flex items-center gap-2">
+        <svg
+          class="h-4 w-4 shrink-0 text-rose-600"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+          />
+        </svg>
+        <span>{{ pageError }}</span>
+      </div>
+      <button
+        @click="load"
+        class="text-xs font-semibold underline hover:no-underline text-rose-800"
+      >
+        Retry
+      </button>
+    </div>
+
+    <!-- Data Table Card -->
+    <div class="overflow-hidden rounded-2xl border border-zinc-200/80 bg-white shadow-2xs">
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs sm:text-sm">
+          <thead
+            class="border-b border-zinc-200/60 bg-zinc-50/75 text-[11px] font-semibold uppercase tracking-wider text-zinc-400"
+          >
+            <tr>
+              <th scope="col" class="px-4 py-3 sm:px-6">Name</th>
+              <th scope="col" class="px-4 py-3 sm:px-6">Parent</th>
+              <th scope="col" class="px-4 py-3 sm:px-6 text-center">Products</th>
+              <th scope="col" class="px-4 py-3 sm:px-6 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-zinc-100">
+            <tr v-if="loading">
+              <td colspan="4" class="px-4 py-12 text-center text-xs text-zinc-400">
+                <div class="inline-flex items-center gap-2">
+                  <svg class="h-4 w-4 animate-spin text-zinc-400" fill="none" viewBox="0 0 24 24">
+                    <circle
+                      class="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      stroke-width="4"
+                    ></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                  </svg>
+                  Loading categories...
+                </div>
+              </td>
+            </tr>
+            <tr v-else-if="!items.length">
+              <td colspan="4" class="px-4 py-12 text-center text-xs text-zinc-500">
+                <div class="mx-auto flex max-w-xs flex-col items-center">
+                  <div
+                    class="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-100 text-zinc-400 mb-2"
+                  >
+                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="1.5"
+                        d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
+                      />
+                    </svg>
+                  </div>
+                  <span class="font-medium text-zinc-800">No categories found</span>
+                  <span class="text-zinc-400 mt-0.5"
+                    >Try searching with a different term or create a category.</span
+                  >
+                </div>
+              </td>
+            </tr>
+            <tr v-else v-for="c in items" :key="c.id" class="hover:bg-zinc-50/60 transition-colors">
+              <td class="px-4 py-3.5 sm:px-6">
+                <div class="flex items-center gap-2">
+                  <span class="font-semibold text-zinc-900">{{ displayName(c.name) }}</span>
+                  <span
+                    v-if="c.deleted_at"
+                    class="rounded-md bg-rose-50 px-2 py-0.5 text-[10px] font-medium text-rose-700 ring-1 ring-rose-600/20"
+                  >
+                    Deleted
+                  </span>
+                </div>
+                <div v-if="c.description" class="text-xs text-zinc-500 mt-0.5 line-clamp-1">
+                  {{ c.description }}
+                </div>
+              </td>
+              <td class="px-4 py-3.5 sm:px-6 text-zinc-600">
+                <span
+                  v-if="c.parent?.name"
+                  class="inline-flex items-center rounded-md bg-zinc-100 px-2 py-0.5 text-xs text-zinc-700"
+                >
+                  {{ c.parent.name }}
+                </span>
+                <span v-else class="text-zinc-400">—</span>
+              </td>
+              <td class="px-4 py-3.5 sm:px-6 text-center text-zinc-600">
+                <span
+                  class="inline-flex items-center rounded-md bg-zinc-100 px-2 py-0.5 text-xs font-medium text-zinc-700"
+                >
+                  {{ c.products_count }}
+                </span>
+              </td>
+              <td class="px-4 py-3.5 sm:px-6 text-right whitespace-nowrap">
+                <div v-if="auth.canManage" class="flex items-center justify-end gap-1.5">
+                  <template v-if="showDeleted">
+                    <button
+                      @click="restoreCategory(c)"
+                      class="rounded-lg border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-700 hover:bg-emerald-100 transition-colors cursor-pointer"
+                    >
+                      Restore
+                    </button>
+                    <button
+                      @click="forceDeleteCategory(c)"
+                      class="rounded-lg border border-rose-200 bg-rose-50/50 px-2.5 py-1 text-xs font-medium text-rose-700 hover:bg-rose-100 transition-colors cursor-pointer"
+                    >
+                      Delete forever
+                    </button>
+                  </template>
+                  <template v-else>
+                    <button
+                      @click="openEdit(c)"
+                      class="rounded-lg border border-zinc-200 px-2.5 py-1 text-xs font-medium text-zinc-700 hover:bg-zinc-100 transition-colors cursor-pointer"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      @click="remove(c)"
+                      class="rounded-lg border border-rose-200 bg-rose-50/50 px-2.5 py-1 text-xs font-medium text-rose-700 hover:bg-rose-100 transition-colors cursor-pointer"
+                    >
+                      Delete
+                    </button>
+                  </template>
+                </div>
+                <span v-else class="text-zinc-400">—</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      <div
+        v-if="meta && meta.last_page > 1"
+        class="flex items-center justify-between border-t border-zinc-200/60 bg-zinc-50/50 px-4 py-3 sm:px-6 text-xs sm:text-sm"
+      >
+        <span class="text-zinc-500">
+          Page <span class="font-medium text-zinc-800">{{ meta.current_page }}</span> of
+          <span class="font-medium text-zinc-800">{{ meta.last_page }}</span> ({{ meta.total }}
+          total)
+        </span>
+        <div class="flex items-center gap-1.5">
+          <button
+            :disabled="meta.current_page <= 1"
+            @click="go(meta.current_page - 1)"
+            class="rounded-lg border border-zinc-200 bg-white px-3 py-1 text-xs font-medium text-zinc-700 hover:bg-zinc-50 disabled:opacity-40 disabled:cursor-not-allowed shadow-2xs transition-colors cursor-pointer"
+          >
+            Previous
+          </button>
+          <button
+            :disabled="meta.current_page >= meta.last_page"
+            @click="go(meta.current_page + 1)"
+            class="rounded-lg border border-zinc-200 bg-white px-3 py-1 text-xs font-medium text-zinc-700 hover:bg-zinc-50 disabled:opacity-40 disabled:cursor-not-allowed shadow-2xs transition-colors cursor-pointer"
+          >
+            Next
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Create / Edit Modal -->
     <div
       v-if="showForm"
       role="dialog"
       aria-modal="true"
       aria-label="Category form"
-      class="fixed inset-0 z-10 flex items-center justify-center bg-black/40 p-4"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-zinc-950/40 backdrop-blur-xs p-4"
     >
       <form
         @submit.prevent="save"
-        class="w-full max-w-md space-y-4 rounded-lg bg-white p-6 shadow-lg"
+        class="flex max-h-[90vh] w-full max-w-md flex-col rounded-2xl border border-zinc-200/80 bg-white shadow-xl"
       >
-        <h3 class="text-lg font-semibold">{{ editingId ? 'Edit category' : 'New category' }}</h3>
-
-        <div>
-          <label class="mb-1 block text-sm font-medium">Name</label>
-          <input
-            v-model="form.name"
-            type="text"
-            class="w-full rounded border border-gray-300 px-3 py-2"
-          />
-          <p v-if="errors.name" class="mt-1 text-sm text-red-600">{{ errors.name[0] }}</p>
+        <div class="flex items-center justify-between border-b border-zinc-100 px-6 py-4">
+          <div>
+            <h3 class="text-base font-bold text-zinc-900">
+              {{ editingId ? 'Edit Category' : 'New Category' }}
+            </h3>
+            <p class="text-xs text-zinc-500">
+              Set category hierarchy, name, and internal description
+            </p>
+          </div>
+          <button
+            type="button"
+            @click="showForm = false"
+            class="rounded-lg p-1.5 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 transition-colors cursor-pointer"
+          >
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
         </div>
 
-        <div>
-          <label class="mb-1 block text-sm font-medium">Parent category</label>
-          <select v-model="form.parent_id" class="w-full rounded border border-gray-300 px-3 py-2">
-            <option value="">None</option>
-            <option v-for="o in parentChoices" :key="o.id" :value="o.id">{{ o.name }}</option>
-          </select>
-          <p v-if="errors.parent_id" class="mt-1 text-sm text-red-600">{{ errors.parent_id[0] }}</p>
+        <div class="overflow-y-auto p-6 space-y-4">
+          <div>
+            <label class="mb-1.5 block text-xs font-semibold text-zinc-700"
+              >Category Name <span class="text-rose-500">*</span></label
+            >
+            <input
+              v-model="form.name"
+              type="text"
+              required
+              class="w-full rounded-xl border border-zinc-200 bg-white px-3.5 py-2 text-xs sm:text-sm text-zinc-900 shadow-2xs focus:border-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-900"
+            />
+            <p v-if="errors.name" class="mt-1 text-xs text-rose-600">{{ errors.name[0] }}</p>
+          </div>
+
+          <div>
+            <label class="mb-1.5 block text-xs font-semibold text-zinc-700">Parent Category</label>
+            <select
+              v-model="form.parent_id"
+              class="w-full rounded-xl border border-zinc-200 bg-white px-3.5 py-2 text-xs sm:text-sm text-zinc-900 shadow-2xs focus:border-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-900"
+            >
+              <option value="">None (Top Level)</option>
+              <option v-for="o in parentChoices" :key="o.id" :value="o.id">{{ o.name }}</option>
+            </select>
+            <p v-if="errors.parent_id" class="mt-1 text-xs text-rose-600">
+              {{ errors.parent_id[0] }}
+            </p>
+          </div>
+
+          <div>
+            <label class="mb-1.5 block text-xs font-semibold text-zinc-700">Description</label>
+            <textarea
+              v-model="form.description"
+              rows="3"
+              placeholder="Brief description of products categorized under this group..."
+              class="w-full rounded-xl border border-zinc-200 bg-white px-3.5 py-2 text-xs sm:text-sm text-zinc-900 placeholder:text-zinc-400 shadow-2xs focus:border-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-900"
+            ></textarea>
+            <p v-if="errors.description" class="mt-1 text-xs text-rose-600">
+              {{ errors.description[0] }}
+            </p>
+          </div>
         </div>
 
-        <div>
-          <label class="mb-1 block text-sm font-medium">Description</label>
-          <textarea
-            v-model="form.description"
-            rows="3"
-            class="w-full rounded border border-gray-300 px-3 py-2"
-          ></textarea>
-          <p v-if="errors.description" class="mt-1 text-sm text-red-600">
-            {{ errors.description[0] }}
-          </p>
-        </div>
-
-        <div class="flex justify-end gap-2">
-          <button type="button" @click="showForm = false" class="rounded border px-4 py-2 text-sm">
+        <div
+          class="flex items-center justify-end gap-2 border-t border-zinc-100 bg-zinc-50/50 px-6 py-4 rounded-b-2xl"
+        >
+          <button
+            type="button"
+            @click="showForm = false"
+            class="rounded-xl border border-zinc-200 bg-white px-4 py-2 text-xs font-semibold text-zinc-700 hover:bg-zinc-50 shadow-2xs transition-colors cursor-pointer"
+          >
             Cancel
           </button>
           <button
             :disabled="saving"
-            class="rounded bg-blue-600 px-4 py-2 text-sm text-white disabled:opacity-50"
+            class="inline-flex items-center gap-2 rounded-xl bg-zinc-900 px-4 py-2 text-xs font-semibold text-white shadow-2xs hover:bg-zinc-800 disabled:opacity-50 transition-colors cursor-pointer"
           >
-            {{ saving ? 'Saving...' : 'Save' }}
+            <svg
+              v-if="saving"
+              class="h-4 w-4 animate-spin text-white"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                class="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                stroke-width="4"
+              ></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+            </svg>
+            {{ saving ? 'Saving...' : 'Save Category' }}
           </button>
         </div>
       </form>

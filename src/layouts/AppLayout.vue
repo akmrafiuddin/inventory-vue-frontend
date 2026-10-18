@@ -30,13 +30,13 @@ const userInitials = computed(() => {
 const roleBadgeClass = computed(() => {
   switch (auth.user?.role) {
     case 'admin':
-      return 'bg-purple-50 text-purple-700 ring-1 ring-purple-600/20'
+      return 'bg-zinc-900 text-zinc-100 ring-1 ring-zinc-800'
     case 'manager':
-      return 'bg-blue-50 text-blue-700 ring-1 ring-blue-600/20'
+      return 'bg-zinc-100 text-zinc-800 ring-1 ring-zinc-300/70'
     case 'staff':
-      return 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-600/20'
+      return 'bg-zinc-100 text-zinc-600 ring-1 ring-zinc-200'
     default:
-      return 'bg-gray-100 text-gray-700 ring-1 ring-gray-600/20'
+      return 'bg-zinc-100 text-zinc-600 ring-1 ring-zinc-200'
   }
 })
 
@@ -78,30 +78,30 @@ watch(
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50 flex flex-col font-sans">
+  <div class="min-h-screen bg-zinc-50/70 flex flex-col font-sans text-zinc-900 antialiased">
     <!-- ============================================================ -->
     <!-- DESKTOP FIXED SIDEBAR (lg and up)                            -->
     <!-- ============================================================ -->
     <aside
-      class="hidden lg:flex lg:flex-col lg:w-64 lg:fixed lg:inset-y-0 z-30 bg-white border-r border-gray-200/90 shadow-2xs"
+      class="hidden lg:flex lg:flex-col lg:w-64 lg:fixed lg:inset-y-0 z-30 bg-white border-r border-zinc-200/80 shadow-2xs"
     >
       <!-- Sidebar Header / Brand Logo -->
-      <div class="h-16 flex items-center px-6 border-b border-gray-100">
+      <div class="h-16 flex items-center px-5 border-b border-zinc-100">
         <RouterLink
           to="/"
-          class="group flex items-center gap-3 focus-visible:outline-blue-600 rounded-lg"
+          class="group flex items-center gap-3 focus-visible:outline-zinc-900 rounded-lg"
           aria-label="Go to Dashboard"
         >
           <div
-            class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white shadow-sm shadow-blue-500/25 transition-transform duration-200 group-hover:scale-105"
+            class="flex h-9 w-9 items-center justify-center rounded-lg bg-zinc-900 text-white shadow-2xs transition-transform duration-150 group-hover:scale-105"
           >
-            <!-- Isometric Package SVG -->
+            <!-- Isometric Box Icon -->
             <svg
               class="h-5 w-5"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
-              stroke-width="2"
+              stroke-width="1.8"
               stroke-linecap="round"
               stroke-linejoin="round"
             >
@@ -113,12 +113,10 @@ watch(
             </svg>
           </div>
           <div class="flex flex-col">
-            <span
-              class="text-base font-bold tracking-tight text-gray-900 group-hover:text-blue-600 transition-colors leading-tight"
-            >
+            <span class="text-sm font-semibold tracking-tight text-zinc-900 leading-tight">
               Inventory
             </span>
-            <span class="text-[10px] font-semibold uppercase tracking-wider text-gray-400">
+            <span class="text-[10px] font-medium uppercase tracking-wider text-zinc-400">
               Operations Hub
             </span>
           </div>
@@ -126,15 +124,15 @@ watch(
       </div>
 
       <!-- Quick Search / Scan Shortcut -->
-      <div class="px-4 pt-4 pb-2">
+      <div class="px-3.5 pt-3.5 pb-1.5">
         <RouterLink
           to="/products"
-          class="flex items-center justify-between w-full rounded-lg border border-gray-200/90 bg-gray-50/70 px-3 py-2 text-xs text-gray-500 hover:border-gray-300 hover:bg-gray-100 transition-colors"
+          class="flex items-center justify-between w-full rounded-lg border border-zinc-200/80 bg-zinc-50/70 px-3 py-1.5 text-xs text-zinc-500 hover:border-zinc-300 hover:bg-zinc-100 transition-colors"
           title="Quickly search or scan inventory items"
         >
           <div class="flex items-center gap-2">
             <svg
-              class="h-4 w-4 text-gray-400"
+              class="h-3.5 w-3.5 text-zinc-400"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -146,10 +144,10 @@ watch(
                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
               />
             </svg>
-            <span>Scan / Search SKU</span>
+            <span class="text-zinc-500">Scan / Search SKU</span>
           </div>
           <kbd
-            class="rounded border border-gray-200 bg-white px-1.5 py-0.5 text-[10px] font-mono text-gray-400 shadow-2xs"
+            class="rounded border border-zinc-200 bg-white px-1.5 py-0.5 text-[10px] font-mono text-zinc-400 shadow-2xs"
           >
             /
           </kbd>
@@ -157,28 +155,33 @@ watch(
       </div>
 
       <!-- Scrollable Navigation Items -->
-      <nav class="flex-1 px-4 py-2 space-y-6 overflow-y-auto">
+      <nav class="flex-1 px-3 py-2 space-y-5 overflow-y-auto">
         <!-- Section: Overview -->
         <div>
-          <p class="px-2 pb-1.5 text-[11px] font-bold uppercase tracking-wider text-gray-400">
+          <p class="px-2.5 pb-1 text-[10px] font-semibold uppercase tracking-wider text-zinc-400">
             Overview
           </p>
           <div class="space-y-0.5">
             <RouterLink
               to="/"
-              class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition-colors"
+              class="flex items-center gap-2.5 px-2.5 py-2 text-xs font-medium rounded-lg transition-colors group"
               :class="
                 isRouteActive('/', true)
-                  ? 'bg-blue-50 text-blue-700 font-semibold ring-1 ring-blue-700/10 shadow-xs'
-                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100/70'
+                  ? 'bg-zinc-900 text-white font-medium shadow-2xs'
+                  : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100/70'
               "
             >
               <svg
-                class="h-4 w-4"
+                class="h-4 w-4 shrink-0 transition-colors"
+                :class="
+                  isRouteActive('/', true)
+                    ? 'text-white'
+                    : 'text-zinc-400 group-hover:text-zinc-600'
+                "
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
-                stroke-width="2"
+                stroke-width="1.8"
               >
                 <path
                   stroke-linecap="round"
@@ -191,19 +194,24 @@ watch(
 
             <RouterLink
               to="/reports"
-              class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition-colors"
+              class="flex items-center gap-2.5 px-2.5 py-2 text-xs font-medium rounded-lg transition-colors group"
               :class="
                 isRouteActive('/reports')
-                  ? 'bg-blue-50 text-blue-700 font-semibold ring-1 ring-blue-700/10 shadow-xs'
-                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100/70'
+                  ? 'bg-zinc-900 text-white font-medium shadow-2xs'
+                  : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100/70'
               "
             >
               <svg
-                class="h-4 w-4"
+                class="h-4 w-4 shrink-0 transition-colors"
+                :class="
+                  isRouteActive('/reports')
+                    ? 'text-white'
+                    : 'text-zinc-400 group-hover:text-zinc-600'
+                "
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
-                stroke-width="2"
+                stroke-width="1.8"
               >
                 <path
                   stroke-linecap="round"
@@ -218,25 +226,30 @@ watch(
 
         <!-- Section: Operations -->
         <div>
-          <p class="px-2 pb-1.5 text-[11px] font-bold uppercase tracking-wider text-gray-400">
+          <p class="px-2.5 pb-1 text-[10px] font-semibold uppercase tracking-wider text-zinc-400">
             Operations
           </p>
           <div class="space-y-0.5">
             <RouterLink
               to="/products"
-              class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition-colors"
+              class="flex items-center gap-2.5 px-2.5 py-2 text-xs font-medium rounded-lg transition-colors group"
               :class="
                 isRouteActive('/products')
-                  ? 'bg-blue-50 text-blue-700 font-semibold ring-1 ring-blue-700/10 shadow-xs'
-                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100/70'
+                  ? 'bg-zinc-900 text-white font-medium shadow-2xs'
+                  : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100/70'
               "
             >
               <svg
-                class="h-4 w-4"
+                class="h-4 w-4 shrink-0 transition-colors"
+                :class="
+                  isRouteActive('/products')
+                    ? 'text-white'
+                    : 'text-zinc-400 group-hover:text-zinc-600'
+                "
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
-                stroke-width="2"
+                stroke-width="1.8"
               >
                 <path
                   stroke-linecap="round"
@@ -249,19 +262,22 @@ watch(
 
             <RouterLink
               to="/stock"
-              class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition-colors"
+              class="flex items-center gap-2.5 px-2.5 py-2 text-xs font-medium rounded-lg transition-colors group"
               :class="
                 isRouteActive('/stock')
-                  ? 'bg-blue-50 text-blue-700 font-semibold ring-1 ring-blue-700/10 shadow-xs'
-                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100/70'
+                  ? 'bg-zinc-900 text-white font-medium shadow-2xs'
+                  : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100/70'
               "
             >
               <svg
-                class="h-4 w-4"
+                class="h-4 w-4 shrink-0 transition-colors"
+                :class="
+                  isRouteActive('/stock') ? 'text-white' : 'text-zinc-400 group-hover:text-zinc-600'
+                "
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
-                stroke-width="2"
+                stroke-width="1.8"
               >
                 <path
                   stroke-linecap="round"
@@ -274,19 +290,24 @@ watch(
 
             <RouterLink
               to="/sales-orders"
-              class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition-colors"
+              class="flex items-center gap-2.5 px-2.5 py-2 text-xs font-medium rounded-lg transition-colors group"
               :class="
                 isRouteActive('/sales-orders')
-                  ? 'bg-blue-50 text-blue-700 font-semibold ring-1 ring-blue-700/10 shadow-xs'
-                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100/70'
+                  ? 'bg-zinc-900 text-white font-medium shadow-2xs'
+                  : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100/70'
               "
             >
               <svg
-                class="h-4 w-4"
+                class="h-4 w-4 shrink-0 transition-colors"
+                :class="
+                  isRouteActive('/sales-orders')
+                    ? 'text-white'
+                    : 'text-zinc-400 group-hover:text-zinc-600'
+                "
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
-                stroke-width="2"
+                stroke-width="1.8"
               >
                 <path
                   stroke-linecap="round"
@@ -299,19 +320,24 @@ watch(
 
             <RouterLink
               to="/purchase-orders"
-              class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition-colors"
+              class="flex items-center gap-2.5 px-2.5 py-2 text-xs font-medium rounded-lg transition-colors group"
               :class="
                 isRouteActive('/purchase-orders')
-                  ? 'bg-blue-50 text-blue-700 font-semibold ring-1 ring-blue-700/10 shadow-xs'
-                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100/70'
+                  ? 'bg-zinc-900 text-white font-medium shadow-2xs'
+                  : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100/70'
               "
             >
               <svg
-                class="h-4 w-4"
+                class="h-4 w-4 shrink-0 transition-colors"
+                :class="
+                  isRouteActive('/purchase-orders')
+                    ? 'text-white'
+                    : 'text-zinc-400 group-hover:text-zinc-600'
+                "
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
-                stroke-width="2"
+                stroke-width="1.8"
               >
                 <path
                   stroke-linecap="round"
@@ -326,25 +352,30 @@ watch(
 
         <!-- Section: Directories & Master Data -->
         <div>
-          <p class="px-2 pb-1.5 text-[11px] font-bold uppercase tracking-wider text-gray-400">
+          <p class="px-2.5 pb-1 text-[10px] font-semibold uppercase tracking-wider text-zinc-400">
             Master Data
           </p>
           <div class="space-y-0.5">
             <RouterLink
               to="/customers"
-              class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition-colors"
+              class="flex items-center gap-2.5 px-2.5 py-2 text-xs font-medium rounded-lg transition-colors group"
               :class="
                 isRouteActive('/customers')
-                  ? 'bg-blue-50 text-blue-700 font-semibold ring-1 ring-blue-700/10 shadow-xs'
-                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100/70'
+                  ? 'bg-zinc-900 text-white font-medium shadow-2xs'
+                  : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100/70'
               "
             >
               <svg
-                class="h-4 w-4"
+                class="h-4 w-4 shrink-0 transition-colors"
+                :class="
+                  isRouteActive('/customers')
+                    ? 'text-white'
+                    : 'text-zinc-400 group-hover:text-zinc-600'
+                "
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
-                stroke-width="2"
+                stroke-width="1.8"
               >
                 <path
                   stroke-linecap="round"
@@ -357,19 +388,24 @@ watch(
 
             <RouterLink
               to="/suppliers"
-              class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition-colors"
+              class="flex items-center gap-2.5 px-2.5 py-2 text-xs font-medium rounded-lg transition-colors group"
               :class="
                 isRouteActive('/suppliers')
-                  ? 'bg-blue-50 text-blue-700 font-semibold ring-1 ring-blue-700/10 shadow-xs'
-                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100/70'
+                  ? 'bg-zinc-900 text-white font-medium shadow-2xs'
+                  : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100/70'
               "
             >
               <svg
-                class="h-4 w-4"
+                class="h-4 w-4 shrink-0 transition-colors"
+                :class="
+                  isRouteActive('/suppliers')
+                    ? 'text-white'
+                    : 'text-zinc-400 group-hover:text-zinc-600'
+                "
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
-                stroke-width="2"
+                stroke-width="1.8"
               >
                 <path
                   stroke-linecap="round"
@@ -382,19 +418,24 @@ watch(
 
             <RouterLink
               to="/categories"
-              class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition-colors"
+              class="flex items-center gap-2.5 px-2.5 py-2 text-xs font-medium rounded-lg transition-colors group"
               :class="
                 isRouteActive('/categories')
-                  ? 'bg-blue-50 text-blue-700 font-semibold ring-1 ring-blue-700/10 shadow-xs'
-                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100/70'
+                  ? 'bg-zinc-900 text-white font-medium shadow-2xs'
+                  : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100/70'
               "
             >
               <svg
-                class="h-4 w-4"
+                class="h-4 w-4 shrink-0 transition-colors"
+                :class="
+                  isRouteActive('/categories')
+                    ? 'text-white'
+                    : 'text-zinc-400 group-hover:text-zinc-600'
+                "
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
-                stroke-width="2"
+                stroke-width="1.8"
               >
                 <path
                   stroke-linecap="round"
@@ -407,19 +448,24 @@ watch(
 
             <RouterLink
               to="/warehouses"
-              class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition-colors"
+              class="flex items-center gap-2.5 px-2.5 py-2 text-xs font-medium rounded-lg transition-colors group"
               :class="
                 isRouteActive('/warehouses')
-                  ? 'bg-blue-50 text-blue-700 font-semibold ring-1 ring-blue-700/10 shadow-xs'
-                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100/70'
+                  ? 'bg-zinc-900 text-white font-medium shadow-2xs'
+                  : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100/70'
               "
             >
               <svg
-                class="h-4 w-4"
+                class="h-4 w-4 shrink-0 transition-colors"
+                :class="
+                  isRouteActive('/warehouses')
+                    ? 'text-white'
+                    : 'text-zinc-400 group-hover:text-zinc-600'
+                "
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
-                stroke-width="2"
+                stroke-width="1.8"
               >
                 <path
                   stroke-linecap="round"
@@ -434,26 +480,31 @@ watch(
 
         <!-- Section: System & Administration -->
         <div v-if="hasAdminSection">
-          <p class="px-2 pb-1.5 text-[11px] font-bold uppercase tracking-wider text-gray-400">
+          <p class="px-2.5 pb-1 text-[10px] font-semibold uppercase tracking-wider text-zinc-400">
             System
           </p>
           <div class="space-y-0.5">
             <RouterLink
               v-if="canAccessActivity"
               to="/activity"
-              class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition-colors"
+              class="flex items-center gap-2.5 px-2.5 py-2 text-xs font-medium rounded-lg transition-colors group"
               :class="
                 isRouteActive('/activity')
-                  ? 'bg-blue-50 text-blue-700 font-semibold ring-1 ring-blue-700/10 shadow-xs'
-                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100/70'
+                  ? 'bg-zinc-900 text-white font-medium shadow-2xs'
+                  : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100/70'
               "
             >
               <svg
-                class="h-4 w-4"
+                class="h-4 w-4 shrink-0 transition-colors"
+                :class="
+                  isRouteActive('/activity')
+                    ? 'text-white'
+                    : 'text-zinc-400 group-hover:text-zinc-600'
+                "
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
-                stroke-width="2"
+                stroke-width="1.8"
               >
                 <path
                   stroke-linecap="round"
@@ -467,19 +518,22 @@ watch(
             <RouterLink
               v-if="canAccessUsers"
               to="/users"
-              class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition-colors"
+              class="flex items-center gap-2.5 px-2.5 py-2 text-xs font-medium rounded-lg transition-colors group"
               :class="
                 isRouteActive('/users')
-                  ? 'bg-blue-50 text-blue-700 font-semibold ring-1 ring-blue-700/10 shadow-xs'
-                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100/70'
+                  ? 'bg-zinc-900 text-white font-medium shadow-2xs'
+                  : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100/70'
               "
             >
               <svg
-                class="h-4 w-4"
+                class="h-4 w-4 shrink-0 transition-colors"
+                :class="
+                  isRouteActive('/users') ? 'text-white' : 'text-zinc-400 group-hover:text-zinc-600'
+                "
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
-                stroke-width="2"
+                stroke-width="1.8"
               >
                 <path
                   stroke-linecap="round"
@@ -494,20 +548,20 @@ watch(
       </nav>
 
       <!-- Sidebar Footer / Current User Profile Card -->
-      <div class="p-3 border-t border-gray-100 bg-gray-50/60">
-        <div class="flex items-center justify-between gap-2 p-1.5 rounded-lg">
+      <div class="p-3 border-t border-zinc-100 bg-zinc-50/50">
+        <div class="flex items-center justify-between gap-2 p-1 rounded-lg">
           <div class="flex items-center gap-2.5 min-w-0">
             <div
-              class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 text-white font-semibold text-xs shadow-xs"
+              class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-zinc-900 text-white font-semibold text-xs shadow-2xs"
             >
               {{ userInitials }}
             </div>
             <div class="min-w-0 flex-1">
-              <p class="text-xs font-semibold text-gray-900 truncate">
+              <p class="text-xs font-semibold text-zinc-900 truncate leading-tight">
                 {{ auth.user?.name }}
               </p>
               <span
-                class="inline-block rounded-full px-2 py-0.2 text-[10px] font-medium capitalize mt-0.5"
+                class="inline-block rounded px-1.5 py-0.2 text-[9px] font-medium capitalize mt-0.5"
                 :class="roleBadgeClass"
               >
                 {{ auth.role || 'User' }}
@@ -516,10 +570,10 @@ watch(
           </div>
 
           <!-- Quick Action Buttons: Settings & Sign Out -->
-          <div class="flex items-center gap-1 shrink-0">
+          <div class="flex items-center gap-0.5 shrink-0">
             <RouterLink
               to="/settings"
-              class="p-1.5 text-gray-500 hover:text-gray-800 hover:bg-gray-200/70 rounded-md transition-colors"
+              class="p-1.5 text-zinc-400 hover:text-zinc-800 hover:bg-zinc-200/60 rounded-md transition-colors"
               title="Preferences & Settings"
             >
               <svg
@@ -527,7 +581,7 @@ watch(
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
-                stroke-width="2"
+                stroke-width="1.8"
               >
                 <path
                   stroke-linecap="round"
@@ -545,7 +599,7 @@ watch(
             <button
               type="button"
               @click="logout"
-              class="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors"
+              class="p-1.5 text-zinc-400 hover:text-rose-600 hover:bg-rose-50 rounded-md transition-colors"
               title="Sign Out"
             >
               <svg
@@ -553,7 +607,7 @@ watch(
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
-                stroke-width="2"
+                stroke-width="1.8"
               >
                 <path
                   stroke-linecap="round"
@@ -571,18 +625,18 @@ watch(
     <!-- MOBILE HEADER & DRAWER (< lg)                                -->
     <!-- ============================================================ -->
     <header
-      class="lg:hidden sticky top-0 z-20 flex h-16 items-center justify-between border-b border-gray-200 bg-white/95 px-4 shadow-xs backdrop-blur-sm"
+      class="lg:hidden sticky top-0 z-20 flex h-14 items-center justify-between border-b border-zinc-200/80 bg-white/95 px-4 shadow-2xs backdrop-blur-md"
     >
       <div class="flex items-center gap-3">
         <button
           type="button"
           @click="isMobileOpen = true"
-          class="flex items-center justify-center p-2 rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-colors focus-visible:outline-blue-600"
+          class="flex items-center justify-center p-1.5 rounded-lg text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100 transition-colors focus-visible:outline-zinc-900"
           aria-label="Open sidebar navigation"
           :aria-expanded="isMobileOpen"
         >
           <svg
-            class="h-6 w-6"
+            class="h-5 w-5"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -594,14 +648,14 @@ watch(
 
         <RouterLink to="/" class="flex items-center gap-2">
           <div
-            class="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-tr from-blue-600 to-indigo-600 text-white shadow-xs"
+            class="flex h-7 w-7 items-center justify-center rounded-lg bg-zinc-900 text-white shadow-2xs"
           >
             <svg
               class="h-4 w-4"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
-              stroke-width="2"
+              stroke-width="1.8"
             >
               <path
                 d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"
@@ -610,18 +664,18 @@ watch(
               <path d="M12 22V12" />
             </svg>
           </div>
-          <span class="font-bold text-gray-900">Inventory</span>
+          <span class="font-semibold text-sm text-zinc-900">Inventory</span>
         </RouterLink>
       </div>
 
       <div class="flex items-center gap-2">
         <RouterLink
           to="/products"
-          class="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg"
+          class="p-1.5 text-zinc-500 hover:text-zinc-800 hover:bg-zinc-100 rounded-lg transition-colors"
           title="Scan or search products"
         >
           <svg
-            class="h-5 w-5"
+            class="h-4 w-4"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -636,7 +690,7 @@ watch(
         </RouterLink>
 
         <div
-          class="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 text-white font-semibold text-xs"
+          class="flex h-7 w-7 items-center justify-center rounded-lg bg-zinc-900 text-white font-semibold text-xs"
         >
           {{ userInitials }}
         </div>
@@ -647,26 +701,26 @@ watch(
     <div v-if="isMobileOpen" class="relative z-50 lg:hidden">
       <!-- Backdrop -->
       <div
-        class="fixed inset-0 bg-gray-900/50 backdrop-blur-xs transition-opacity duration-300"
+        class="fixed inset-0 bg-zinc-950/30 backdrop-blur-xs transition-opacity duration-200"
         @click="isMobileOpen = false"
       ></div>
 
       <!-- Off-canvas panel -->
       <div
-        class="fixed inset-y-0 left-0 w-72 max-w-[85vw] bg-white shadow-2xl flex flex-col z-50 animate-in slide-in-from-left duration-200"
+        class="fixed inset-y-0 left-0 w-72 max-w-[85vw] bg-white shadow-2xl flex flex-col z-50 animate-in slide-in-from-left duration-200 border-r border-zinc-200/80"
       >
         <!-- Drawer Header -->
-        <div class="h-16 flex items-center justify-between px-6 border-b border-gray-100">
-          <RouterLink to="/" class="flex items-center gap-3" @click="isMobileOpen = false">
+        <div class="h-14 flex items-center justify-between px-5 border-b border-zinc-100">
+          <RouterLink to="/" class="flex items-center gap-2.5" @click="isMobileOpen = false">
             <div
-              class="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white"
+              class="flex h-8 w-8 items-center justify-center rounded-lg bg-zinc-900 text-white shadow-2xs"
             >
               <svg
-                class="h-5 w-5"
+                class="h-4 w-4"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
-                stroke-width="2"
+                stroke-width="1.8"
               >
                 <path
                   d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"
@@ -676,21 +730,19 @@ watch(
               </svg>
             </div>
             <div class="flex flex-col">
-              <span class="text-base font-bold text-gray-900 leading-tight"> Inventory </span>
-              <span class="text-[10px] font-semibold uppercase text-gray-400">
-                Operations Hub
-              </span>
+              <span class="text-sm font-semibold text-zinc-900 leading-tight"> Inventory </span>
+              <span class="text-[9px] font-medium uppercase text-zinc-400"> Operations Hub </span>
             </div>
           </RouterLink>
 
           <button
             type="button"
             @click="isMobileOpen = false"
-            class="p-2 text-gray-500 hover:text-gray-900 rounded-lg hover:bg-gray-100"
+            class="p-1.5 text-zinc-400 hover:text-zinc-800 rounded-lg hover:bg-zinc-100"
             aria-label="Close navigation"
           >
             <svg
-              class="h-5 w-5"
+              class="h-4 w-4"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -702,20 +754,20 @@ watch(
         </div>
 
         <!-- Drawer Navigation Items -->
-        <nav class="flex-1 px-4 py-3 space-y-6 overflow-y-auto">
+        <nav class="flex-1 px-3 py-3 space-y-5 overflow-y-auto">
           <!-- Overview -->
           <div>
-            <p class="px-2 pb-1.5 text-[11px] font-bold uppercase tracking-wider text-gray-400">
+            <p class="px-2.5 pb-1 text-[10px] font-semibold uppercase tracking-wider text-zinc-400">
               Overview
             </p>
             <div class="space-y-0.5">
               <RouterLink
                 to="/"
-                class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg"
+                class="flex items-center gap-2.5 px-2.5 py-2 text-xs font-medium rounded-lg"
                 :class="
                   isRouteActive('/', true)
-                    ? 'bg-blue-50 text-blue-700 font-semibold'
-                    : 'text-gray-600 hover:bg-gray-100'
+                    ? 'bg-zinc-900 text-white font-medium'
+                    : 'text-zinc-600 hover:bg-zinc-100'
                 "
               >
                 <svg
@@ -723,7 +775,7 @@ watch(
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
-                  stroke-width="2"
+                  stroke-width="1.8"
                 >
                   <path
                     stroke-linecap="round"
@@ -736,11 +788,11 @@ watch(
 
               <RouterLink
                 to="/reports"
-                class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg"
+                class="flex items-center gap-2.5 px-2.5 py-2 text-xs font-medium rounded-lg"
                 :class="
                   isRouteActive('/reports')
-                    ? 'bg-blue-50 text-blue-700 font-semibold'
-                    : 'text-gray-600 hover:bg-gray-100'
+                    ? 'bg-zinc-900 text-white font-medium'
+                    : 'text-zinc-600 hover:bg-zinc-100'
                 "
               >
                 <svg
@@ -748,7 +800,7 @@ watch(
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
-                  stroke-width="2"
+                  stroke-width="1.8"
                 >
                   <path
                     stroke-linecap="round"
@@ -763,17 +815,17 @@ watch(
 
           <!-- Operations -->
           <div>
-            <p class="px-2 pb-1.5 text-[11px] font-bold uppercase tracking-wider text-gray-400">
+            <p class="px-2.5 pb-1 text-[10px] font-semibold uppercase tracking-wider text-zinc-400">
               Operations
             </p>
             <div class="space-y-0.5">
               <RouterLink
                 to="/products"
-                class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg"
+                class="flex items-center gap-2.5 px-2.5 py-2 text-xs font-medium rounded-lg"
                 :class="
                   isRouteActive('/products')
-                    ? 'bg-blue-50 text-blue-700 font-semibold'
-                    : 'text-gray-600 hover:bg-gray-100'
+                    ? 'bg-zinc-900 text-white font-medium'
+                    : 'text-zinc-600 hover:bg-zinc-100'
                 "
               >
                 <svg
@@ -781,7 +833,7 @@ watch(
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
-                  stroke-width="2"
+                  stroke-width="1.8"
                 >
                   <path
                     stroke-linecap="round"
@@ -794,11 +846,11 @@ watch(
 
               <RouterLink
                 to="/stock"
-                class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg"
+                class="flex items-center gap-2.5 px-2.5 py-2 text-xs font-medium rounded-lg"
                 :class="
                   isRouteActive('/stock')
-                    ? 'bg-blue-50 text-blue-700 font-semibold'
-                    : 'text-gray-600 hover:bg-gray-100'
+                    ? 'bg-zinc-900 text-white font-medium'
+                    : 'text-zinc-600 hover:bg-zinc-100'
                 "
               >
                 <svg
@@ -806,7 +858,7 @@ watch(
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
-                  stroke-width="2"
+                  stroke-width="1.8"
                 >
                   <path
                     stroke-linecap="round"
@@ -819,11 +871,11 @@ watch(
 
               <RouterLink
                 to="/sales-orders"
-                class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg"
+                class="flex items-center gap-2.5 px-2.5 py-2 text-xs font-medium rounded-lg"
                 :class="
                   isRouteActive('/sales-orders')
-                    ? 'bg-blue-50 text-blue-700 font-semibold'
-                    : 'text-gray-600 hover:bg-gray-100'
+                    ? 'bg-zinc-900 text-white font-medium'
+                    : 'text-zinc-600 hover:bg-zinc-100'
                 "
               >
                 <svg
@@ -831,7 +883,7 @@ watch(
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
-                  stroke-width="2"
+                  stroke-width="1.8"
                 >
                   <path
                     stroke-linecap="round"
@@ -844,11 +896,11 @@ watch(
 
               <RouterLink
                 to="/purchase-orders"
-                class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg"
+                class="flex items-center gap-2.5 px-2.5 py-2 text-xs font-medium rounded-lg"
                 :class="
                   isRouteActive('/purchase-orders')
-                    ? 'bg-blue-50 text-blue-700 font-semibold'
-                    : 'text-gray-600 hover:bg-gray-100'
+                    ? 'bg-zinc-900 text-white font-medium'
+                    : 'text-zinc-600 hover:bg-zinc-100'
                 "
               >
                 <svg
@@ -856,7 +908,7 @@ watch(
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
-                  stroke-width="2"
+                  stroke-width="1.8"
                 >
                   <path
                     stroke-linecap="round"
@@ -871,17 +923,17 @@ watch(
 
           <!-- Master Data -->
           <div>
-            <p class="px-2 pb-1.5 text-[11px] font-bold uppercase tracking-wider text-gray-400">
+            <p class="px-2.5 pb-1 text-[10px] font-semibold uppercase tracking-wider text-zinc-400">
               Master Data
             </p>
             <div class="space-y-0.5">
               <RouterLink
                 to="/customers"
-                class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg"
+                class="flex items-center gap-2.5 px-2.5 py-2 text-xs font-medium rounded-lg"
                 :class="
                   isRouteActive('/customers')
-                    ? 'bg-blue-50 text-blue-700 font-semibold'
-                    : 'text-gray-600 hover:bg-gray-100'
+                    ? 'bg-zinc-900 text-white font-medium'
+                    : 'text-zinc-600 hover:bg-zinc-100'
                 "
               >
                 <svg
@@ -889,7 +941,7 @@ watch(
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
-                  stroke-width="2"
+                  stroke-width="1.8"
                 >
                   <path
                     stroke-linecap="round"
@@ -902,11 +954,11 @@ watch(
 
               <RouterLink
                 to="/suppliers"
-                class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg"
+                class="flex items-center gap-2.5 px-2.5 py-2 text-xs font-medium rounded-lg"
                 :class="
                   isRouteActive('/suppliers')
-                    ? 'bg-blue-50 text-blue-700 font-semibold'
-                    : 'text-gray-600 hover:bg-gray-100'
+                    ? 'bg-zinc-900 text-white font-medium'
+                    : 'text-zinc-600 hover:bg-zinc-100'
                 "
               >
                 <svg
@@ -914,7 +966,7 @@ watch(
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
-                  stroke-width="2"
+                  stroke-width="1.8"
                 >
                   <path
                     stroke-linecap="round"
@@ -927,11 +979,11 @@ watch(
 
               <RouterLink
                 to="/categories"
-                class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg"
+                class="flex items-center gap-2.5 px-2.5 py-2 text-xs font-medium rounded-lg"
                 :class="
                   isRouteActive('/categories')
-                    ? 'bg-blue-50 text-blue-700 font-semibold'
-                    : 'text-gray-600 hover:bg-gray-100'
+                    ? 'bg-zinc-900 text-white font-medium'
+                    : 'text-zinc-600 hover:bg-zinc-100'
                 "
               >
                 <svg
@@ -939,7 +991,7 @@ watch(
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
-                  stroke-width="2"
+                  stroke-width="1.8"
                 >
                   <path
                     stroke-linecap="round"
@@ -952,11 +1004,11 @@ watch(
 
               <RouterLink
                 to="/warehouses"
-                class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg"
+                class="flex items-center gap-2.5 px-2.5 py-2 text-xs font-medium rounded-lg"
                 :class="
                   isRouteActive('/warehouses')
-                    ? 'bg-blue-50 text-blue-700 font-semibold'
-                    : 'text-gray-600 hover:bg-gray-100'
+                    ? 'bg-zinc-900 text-white font-medium'
+                    : 'text-zinc-600 hover:bg-zinc-100'
                 "
               >
                 <svg
@@ -964,7 +1016,7 @@ watch(
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
-                  stroke-width="2"
+                  stroke-width="1.8"
                 >
                   <path
                     stroke-linecap="round"
@@ -979,18 +1031,18 @@ watch(
 
           <!-- Administration -->
           <div v-if="hasAdminSection">
-            <p class="px-2 pb-1.5 text-[11px] font-bold uppercase tracking-wider text-gray-400">
+            <p class="px-2.5 pb-1 text-[10px] font-semibold uppercase tracking-wider text-zinc-400">
               System
             </p>
             <div class="space-y-0.5">
               <RouterLink
                 v-if="canAccessActivity"
                 to="/activity"
-                class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg"
+                class="flex items-center gap-2.5 px-2.5 py-2 text-xs font-medium rounded-lg"
                 :class="
                   isRouteActive('/activity')
-                    ? 'bg-blue-50 text-blue-700 font-semibold'
-                    : 'text-gray-600 hover:bg-gray-100'
+                    ? 'bg-zinc-900 text-white font-medium'
+                    : 'text-zinc-600 hover:bg-zinc-100'
                 "
               >
                 <svg
@@ -998,7 +1050,7 @@ watch(
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
-                  stroke-width="2"
+                  stroke-width="1.8"
                 >
                   <path
                     stroke-linecap="round"
@@ -1012,11 +1064,11 @@ watch(
               <RouterLink
                 v-if="canAccessUsers"
                 to="/users"
-                class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg"
+                class="flex items-center gap-2.5 px-2.5 py-2 text-xs font-medium rounded-lg"
                 :class="
                   isRouteActive('/users')
-                    ? 'bg-blue-50 text-blue-700 font-semibold'
-                    : 'text-gray-600 hover:bg-gray-100'
+                    ? 'bg-zinc-900 text-white font-medium'
+                    : 'text-zinc-600 hover:bg-zinc-100'
                 "
               >
                 <svg
@@ -1024,7 +1076,7 @@ watch(
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
-                  stroke-width="2"
+                  stroke-width="1.8"
                 >
                   <path
                     stroke-linecap="round"
@@ -1039,20 +1091,20 @@ watch(
         </nav>
 
         <!-- Drawer Footer -->
-        <div class="p-4 border-t border-gray-100 bg-gray-50/70">
+        <div class="p-3.5 border-t border-zinc-100 bg-zinc-50/70">
           <div class="flex items-center justify-between">
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-2.5">
               <div
-                class="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 text-white font-semibold text-xs shadow-xs"
+                class="flex h-8 w-8 items-center justify-center rounded-lg bg-zinc-900 text-white font-semibold text-xs shadow-2xs"
               >
                 {{ userInitials }}
               </div>
               <div>
-                <p class="text-xs font-semibold text-gray-900 leading-tight">
+                <p class="text-xs font-semibold text-zinc-900 leading-tight">
                   {{ auth.user?.name }}
                 </p>
                 <span
-                  class="inline-block rounded-full px-2 py-0.2 text-[10px] font-medium capitalize mt-0.5"
+                  class="inline-block rounded px-1.5 py-0.2 text-[9px] font-medium capitalize mt-0.5"
                   :class="roleBadgeClass"
                 >
                   {{ auth.role }}
@@ -1062,15 +1114,15 @@ watch(
 
             <RouterLink
               to="/settings"
-              class="p-2 text-gray-500 hover:text-gray-800 rounded-lg hover:bg-gray-200/70"
+              class="p-1.5 text-zinc-400 hover:text-zinc-800 rounded-lg hover:bg-zinc-200/60"
               title="Settings"
             >
               <svg
-                class="h-5 w-5"
+                class="h-4 w-4"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
-                stroke-width="2"
+                stroke-width="1.8"
               >
                 <path
                   stroke-linecap="round"
@@ -1089,14 +1141,14 @@ watch(
           <button
             type="button"
             @click="logout"
-            class="mt-3 flex w-full items-center justify-center gap-2 rounded-lg bg-gray-200/80 py-2 text-sm font-medium text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors"
+            class="mt-3 flex w-full items-center justify-center gap-2 rounded-lg border border-zinc-200 bg-white py-1.5 text-xs font-medium text-rose-600 hover:bg-rose-50 hover:border-rose-200 transition-colors shadow-2xs"
           >
             <svg
-              class="h-4 w-4"
+              class="h-3.5 w-3.5"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
-              stroke-width="2"
+              stroke-width="1.8"
             >
               <path
                 stroke-linecap="round"

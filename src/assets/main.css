@@ -1,12 +1,22 @@
 @import 'tailwindcss';
 
-/*
- * Visible keyboard focus everywhere. Tailwind's preflight removes native
- * outlines, so restore a clear ring for keyboard users (but not mouse clicks).
- */
 @layer base {
+  :root {
+    font-family:
+      'Plus Jakarta Sans',
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      'Segoe UI',
+      Roboto,
+      sans-serif;
+  }
+
+  /*
+   * Minimal, crisp keyboard focus outline.
+   */
   :focus-visible {
-    outline: 2px solid var(--color-blue-600);
+    outline: 2px solid var(--color-zinc-900, #18181b);
     outline-offset: 2px;
   }
 }

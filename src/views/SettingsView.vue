@@ -49,58 +49,134 @@ async function save() {
 </script>
 
 <template>
-  <div class="max-w-2xl">
-    <h2 class="mb-4 text-xl font-semibold">Settings</h2>
-
-    <div class="mb-6 rounded-lg bg-white p-5 shadow">
-      <h3 class="mb-3 text-sm font-semibold text-gray-500 uppercase">Account</h3>
-      <p class="text-sm"><span class="text-gray-500">Name:</span> {{ auth.user?.name ?? '-' }}</p>
-      <p class="text-sm"><span class="text-gray-500">Email:</span> {{ auth.user?.email ?? '-' }}</p>
-      <p class="text-sm"><span class="text-gray-500">Role:</span> {{ auth.user?.role ?? '-' }}</p>
+  <div class="max-w-2xl space-y-6">
+    <!-- Header -->
+    <div>
+      <h1 class="text-xl font-bold tracking-tight text-zinc-900 sm:text-2xl">Account & Settings</h1>
+      <p class="mt-0.5 text-xs text-zinc-500 sm:text-sm">
+        Manage profile credentials, account authority, and automated alert delivery
+      </p>
     </div>
 
-    <div class="rounded-lg bg-white p-5 shadow">
-      <h3 class="mb-1 text-sm font-semibold text-gray-500 uppercase">Email notifications</h3>
-      <p class="mb-4 text-sm text-gray-500">
-        Choose which alerts you want delivered to your email address.
-      </p>
-
-      <label class="mb-3 flex items-start gap-3">
-        <input
-          v-model="preferences.notify_low_stock"
-          type="checkbox"
-          class="mt-0.5 h-4 w-4 rounded border-gray-300"
-        />
-        <span class="text-sm">
-          <span class="font-medium">Low stock alerts</span>
-          <span class="block text-gray-500">
-            Emailed when a product falls to or below its reorder level.
+    <!-- Account Details Card -->
+    <div class="overflow-hidden rounded-2xl border border-zinc-200/80 bg-white shadow-2xs">
+      <div class="border-b border-zinc-100 px-6 py-4">
+        <h2 class="text-xs font-bold uppercase tracking-wider text-zinc-400">Profile Identity</h2>
+      </div>
+      <div class="p-6">
+        <div class="flex items-center gap-4">
+          <div
+            class="flex h-12 w-12 items-center justify-center rounded-2xl bg-zinc-900 text-base font-bold text-white shadow-2xs"
+          >
+            {{ (auth.user?.name || 'U').charAt(0).toUpperCase() }}
+          </div>
+          <div class="flex-1">
+            <h3 class="text-base font-bold text-zinc-900">{{ auth.user?.name ?? '—' }}</h3>
+            <p class="text-xs text-zinc-500">{{ auth.user?.email ?? '—' }}</p>
+          </div>
+          <span
+            class="inline-flex items-center rounded-full bg-zinc-100 px-3 py-1 text-xs font-semibold capitalize text-zinc-800 ring-1 ring-zinc-300/60"
+          >
+            {{ auth.user?.role ?? 'User' }}
           </span>
-        </span>
-      </label>
+        </div>
 
-      <label class="flex items-start gap-3">
-        <input
-          v-model="preferences.notify_purchase_orders"
-          type="checkbox"
-          class="mt-0.5 h-4 w-4 rounded border-gray-300"
-        />
-        <span class="text-sm">
-          <span class="font-medium">Purchase order received</span>
-          <span class="block text-gray-500">
-            Emailed when a purchase order has been fully received.
-          </span>
-        </span>
-      </label>
-
-      <div class="mt-5">
-        <button
-          :disabled="loading || saving"
-          class="rounded bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700 disabled:opacity-50"
-          @click="save"
+        <div
+          class="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4 border-t border-zinc-100 pt-5 text-xs"
         >
-          {{ saving ? 'Saving...' : 'Save preferences' }}
-        </button>
+          <div>
+            <span class="text-zinc-400">Full Name</span>
+            <div class="mt-1 font-semibold text-zinc-800">{{ auth.user?.name ?? '—' }}</div>
+          </div>
+          <div>
+            <span class="text-zinc-400">Signed-in Email</span>
+            <div class="mt-1 font-semibold text-zinc-800">{{ auth.user?.email ?? '—' }}</div>
+          </div>
+          <div>
+            <span class="text-zinc-400">System Role</span>
+            <div class="mt-1 font-semibold capitalize text-zinc-800">
+              {{ auth.user?.role ?? '—' }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notification Preferences Card -->
+    <div class="overflow-hidden rounded-2xl border border-zinc-200/80 bg-white shadow-2xs">
+      <div class="border-b border-zinc-100 px-6 py-4">
+        <h2 class="text-xs font-bold uppercase tracking-wider text-zinc-400">
+          Email Notifications
+        </h2>
+        <p class="text-xs text-zinc-500 mt-0.5">
+          Choose which operational events send an alert to your mailbox
+        </p>
+      </div>
+
+      <div class="p-6 space-y-4">
+        <label
+          class="flex items-start gap-3 rounded-xl border border-zinc-200/80 bg-zinc-50/40 p-4 transition-colors hover:bg-zinc-50 cursor-pointer"
+        >
+          <input
+            v-model="preferences.notify_low_stock"
+            type="checkbox"
+            class="mt-0.5 h-4 w-4 rounded border-zinc-300 text-zinc-900 focus:ring-zinc-900 cursor-pointer"
+          />
+          <div class="flex-1">
+            <span class="block text-xs sm:text-sm font-semibold text-zinc-900"
+              >Low stock alerts</span
+            >
+            <span class="mt-0.5 block text-xs text-zinc-500">
+              Receive an email immediately whenever an inventory product drops below its safety
+              reorder threshold.
+            </span>
+          </div>
+        </label>
+
+        <label
+          class="flex items-start gap-3 rounded-xl border border-zinc-200/80 bg-zinc-50/40 p-4 transition-colors hover:bg-zinc-50 cursor-pointer"
+        >
+          <input
+            v-model="preferences.notify_purchase_orders"
+            type="checkbox"
+            class="mt-0.5 h-4 w-4 rounded border-zinc-300 text-zinc-900 focus:ring-zinc-900 cursor-pointer"
+          />
+          <div class="flex-1">
+            <span class="block text-xs sm:text-sm font-semibold text-zinc-900"
+              >Purchase order received</span
+            >
+            <span class="mt-0.5 block text-xs text-zinc-500">
+              Receive a confirmation email when inbound supplier shipments are fully received and
+              verified.
+            </span>
+          </div>
+        </label>
+
+        <div class="pt-2">
+          <button
+            :disabled="loading || saving"
+            class="inline-flex items-center gap-2 rounded-xl bg-zinc-900 px-4 py-2 text-xs font-semibold text-white shadow-2xs hover:bg-zinc-800 disabled:opacity-50 transition-colors cursor-pointer"
+            @click="save"
+          >
+            <svg
+              v-if="saving"
+              class="h-4 w-4 animate-spin text-white"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                class="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                stroke-width="4"
+              ></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+            </svg>
+            {{ saving ? 'Saving...' : 'Save preferences' }}
+          </button>
+        </div>
       </div>
     </div>
   </div>

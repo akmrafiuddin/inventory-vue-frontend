@@ -35,13 +35,13 @@ defineExpose({ focus })
 
 <template>
   <div class="relative">
-    <span class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-gray-400">
+    <span class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-zinc-400">
       <svg
         class="h-4 w-4"
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
-        stroke-width="1.8"
+        stroke-width="1.75"
         stroke-linecap="round"
       >
         <path d="M4 5v14M8 5v14M12 5v14M17 5v14M20 5v14" />
@@ -52,7 +52,7 @@ defineExpose({ focus })
       v-model="code"
       type="text"
       :placeholder="placeholder"
-      class="w-full rounded border border-gray-300 bg-white py-2 pl-9 pr-3 text-sm"
+      class="w-full rounded-lg border border-zinc-200 bg-white py-2 pl-9 pr-3 text-sm text-zinc-900 placeholder:text-zinc-400 shadow-2xs transition-colors focus:border-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-900"
       @keydown.enter.prevent="submit"
     />
   </div>

@@ -361,39 +361,44 @@ onMounted(() => {
 </script>
 
 <template>
-  <div>
-    <div class="mb-4 flex items-center justify-between">
-      <h2 class="text-xl font-semibold">Products</h2>
-      <div class="flex gap-2">
+  <div class="space-y-6">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <div>
+        <h2 class="text-xl sm:text-2xl font-bold tracking-tight text-zinc-900">Products</h2>
+        <p class="text-xs text-zinc-500 mt-0.5">
+          Manage product catalog, inventory units, and supplier links
+        </p>
+      </div>
+      <div class="flex items-center gap-2">
         <button
           @click="exportProducts"
-          class="rounded border bg-white px-4 py-2 text-sm hover:bg-gray-50"
+          class="rounded-xl border border-zinc-200 bg-white px-3.5 py-2 text-xs font-semibold text-zinc-700 hover:bg-zinc-50 shadow-2xs transition-colors cursor-pointer"
         >
           Export CSV
         </button>
         <button
           v-if="auth.canManage"
           @click="openCreate"
-          class="rounded bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700"
+          class="rounded-xl bg-zinc-900 px-3.5 py-2 text-xs font-semibold text-white hover:bg-zinc-800 shadow-2xs transition-colors cursor-pointer"
         >
           New product
         </button>
       </div>
     </div>
 
-    <div class="mb-4 flex flex-wrap items-center gap-3">
+    <div class="flex flex-wrap items-center gap-2.5">
       <BarcodeScanInput class="w-full max-w-xs" @scan="handleScan" />
       <input
         v-model="search"
         type="text"
         aria-label="Search products by name, SKU or barcode"
         placeholder="Search by name, SKU or barcode..."
-        class="w-full max-w-xs rounded border border-gray-300 bg-white px-3 py-2 text-sm"
+        class="w-full max-w-xs rounded-xl border border-zinc-200 bg-white px-3.5 py-2 text-xs sm:text-sm text-zinc-900 placeholder:text-zinc-400 shadow-2xs transition-colors focus:border-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-900"
       />
       <select
         v-model="categoryFilter"
         aria-label="Filter by category"
-        class="rounded border border-gray-300 bg-white px-3 py-2 text-sm"
+        class="rounded-xl border border-zinc-200 bg-white px-3 py-2 text-xs sm:text-sm text-zinc-800 shadow-2xs transition-colors focus:border-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-900"
       >
         <option value="">All categories</option>
         <option v-for="c in categories" :key="c.id" :value="c.id">{{ c.name }}</option>
@@ -401,130 +406,181 @@ onMounted(() => {
       <select
         v-model="activeFilter"
         aria-label="Filter by status"
-        class="rounded border border-gray-300 bg-white px-3 py-2 text-sm"
+        class="rounded-xl border border-zinc-200 bg-white px-3 py-2 text-xs sm:text-sm text-zinc-800 shadow-2xs transition-colors focus:border-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-900"
       >
         <option value="">All statuses</option>
         <option value="1">Active</option>
         <option value="0">Inactive</option>
       </select>
-      <label class="flex items-center gap-2 text-sm text-gray-700">
-        <input v-model="showDeleted" type="checkbox" class="h-4 w-4 rounded border-gray-300" />
+      <label class="flex items-center gap-2 text-xs sm:text-sm text-zinc-600 cursor-pointer">
+        <input
+          v-model="showDeleted"
+          type="checkbox"
+          class="h-4 w-4 rounded border-zinc-300 text-zinc-900 focus:ring-zinc-900"
+        />
         Show deleted
       </label>
     </div>
 
-    <p v-if="pageError" class="mb-4 rounded bg-red-50 px-3 py-2 text-sm text-red-700">
+    <p
+      v-if="pageError"
+      class="rounded-xl bg-rose-50 border border-rose-200/70 px-4 py-3 text-xs sm:text-sm text-rose-700"
+    >
       {{ pageError }}
     </p>
 
-    <div class="overflow-x-auto rounded-lg bg-white shadow">
-      <table class="w-full text-left text-sm">
-        <thead class="border-b bg-gray-50 text-gray-600">
-          <tr>
-            <th scope="col" class="px-4 py-3">Image</th>
-            <th scope="col" class="px-4 py-3">SKU</th>
-            <th scope="col" class="px-4 py-3">Name</th>
-            <th scope="col" class="px-4 py-3">Category</th>
-            <th scope="col" class="px-4 py-3">Cost</th>
-            <th scope="col" class="px-4 py-3">Sell</th>
-            <th scope="col" class="px-4 py-3">Stock</th>
-            <th scope="col" class="px-4 py-3">Status</th>
-            <th scope="col" class="px-4 py-3 text-right">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-if="loading">
-            <td colspan="9" class="px-4 py-6 text-center text-gray-500">Loading...</td>
-          </tr>
-          <tr v-else-if="!items.length">
-            <td colspan="9" class="px-4 py-6 text-center text-gray-500">No products found.</td>
-          </tr>
-          <tr v-else v-for="p in items" :key="p.id" class="border-b last:border-0">
-            <td class="px-4 py-2">
-              <img
-                v-if="p.image"
-                :src="imageUrl(p.image)"
-                alt=""
-                class="h-10 w-10 rounded object-cover"
-              />
-              <span v-else class="text-gray-400">-</span>
-            </td>
-            <td class="px-4 py-3 font-mono text-xs text-gray-600">{{ displaySku(p.sku) }}</td>
-            <td class="px-4 py-3 font-medium">{{ p.name }}</td>
-            <td class="px-4 py-3 text-gray-600">{{ p.category?.name ?? '-' }}</td>
-            <td class="px-4 py-3 text-gray-600">{{ Number(p.cost_price).toFixed(2) }}</td>
-            <td class="px-4 py-3 text-gray-600">{{ Number(p.sell_price).toFixed(2) }}</td>
-            <td class="px-4 py-3">
-              <span
-                :class="
-                  p.stock_total <= p.reorder_level ? 'font-semibold text-red-600' : 'text-gray-600'
-                "
-              >
-                {{ p.stock_total }}
-              </span>
-              <span
-                v-if="p.stock_total <= p.reorder_level"
-                class="ml-1 rounded-full bg-red-100 px-2 py-0.5 text-xs font-medium text-red-700"
-              >
-                Low
-              </span>
-            </td>
-            <td class="px-4 py-3">
-              <span
-                class="rounded-full px-2 py-0.5 text-xs font-medium"
-                :class="p.is_active ? 'bg-green-100 text-green-700' : 'bg-gray-200 text-gray-600'"
-              >
-                {{ p.is_active ? 'Active' : 'Inactive' }}
-              </span>
-            </td>
-            <td class="px-4 py-3 text-right">
-              <template v-if="showDeleted">
-                <template v-if="auth.canManage">
-                  <button @click="restoreProduct(p)" class="mr-3 text-green-600 hover:underline">
-                    Restore
-                  </button>
-                  <button @click="forceDeleteProduct(p)" class="text-red-600 hover:underline">
-                    Delete forever
-                  </button>
+    <div class="overflow-hidden rounded-2xl bg-white border border-zinc-200/80 shadow-2xs">
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs sm:text-sm">
+          <thead
+            class="border-b border-zinc-200/60 bg-zinc-50/75 text-[11px] font-semibold uppercase tracking-wider text-zinc-400"
+          >
+            <tr>
+              <th scope="col" class="px-4 py-3">Image</th>
+              <th scope="col" class="px-4 py-3">SKU</th>
+              <th scope="col" class="px-4 py-3">Name</th>
+              <th scope="col" class="px-4 py-3">Category</th>
+              <th scope="col" class="px-4 py-3">Cost</th>
+              <th scope="col" class="px-4 py-3">Sell</th>
+              <th scope="col" class="px-4 py-3">Stock</th>
+              <th scope="col" class="px-4 py-3">Status</th>
+              <th scope="col" class="px-4 py-3 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-zinc-100">
+            <tr v-if="loading">
+              <td colspan="9" class="px-4 py-8 text-center text-zinc-400 text-xs">
+                Loading products...
+              </td>
+            </tr>
+            <tr v-else-if="!items.length">
+              <td colspan="9" class="px-4 py-8 text-center text-zinc-400 text-xs">
+                No products found.
+              </td>
+            </tr>
+            <tr v-else v-for="p in items" :key="p.id" class="hover:bg-zinc-50/50 transition-colors">
+              <td class="px-4 py-2.5">
+                <img
+                  v-if="p.image"
+                  :src="imageUrl(p.image)"
+                  alt=""
+                  class="h-9 w-9 rounded-lg object-cover border border-zinc-200/70"
+                />
+                <div
+                  v-else
+                  class="h-9 w-9 rounded-lg bg-zinc-100 border border-zinc-200/60 flex items-center justify-center text-zinc-400 text-xs font-mono"
+                >
+                  -
+                </div>
+              </td>
+              <td class="px-4 py-3 font-mono text-xs text-zinc-500">{{ displaySku(p.sku) }}</td>
+              <td class="px-4 py-3 font-medium text-zinc-900">{{ p.name }}</td>
+              <td class="px-4 py-3 text-zinc-600">{{ p.category?.name ?? '-' }}</td>
+              <td class="px-4 py-3 font-mono text-zinc-600">
+                ${{ Number(p.cost_price).toFixed(2) }}
+              </td>
+              <td class="px-4 py-3 font-mono text-zinc-600">
+                ${{ Number(p.sell_price).toFixed(2) }}
+              </td>
+              <td class="px-4 py-3">
+                <span
+                  :class="
+                    p.stock_total <= p.reorder_level
+                      ? 'font-semibold text-rose-600'
+                      : 'text-zinc-700 font-medium'
+                  "
+                >
+                  {{ p.stock_total }}
+                </span>
+                <span
+                  v-if="p.stock_total <= p.reorder_level"
+                  class="ml-1.5 inline-flex items-center rounded-full bg-rose-50 px-2 py-0.5 text-[10px] font-semibold text-rose-700 ring-1 ring-rose-600/20"
+                >
+                  Low
+                </span>
+              </td>
+              <td class="px-4 py-3">
+                <span
+                  class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium"
+                  :class="
+                    p.is_active
+                      ? 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-600/20'
+                      : 'bg-zinc-100 text-zinc-600 ring-1 ring-zinc-300/50'
+                  "
+                >
+                  {{ p.is_active ? 'Active' : 'Inactive' }}
+                </span>
+              </td>
+              <td class="px-4 py-3 text-right">
+                <template v-if="showDeleted">
+                  <template v-if="auth.canManage">
+                    <button
+                      @click="restoreProduct(p)"
+                      class="mr-3 font-medium text-emerald-600 hover:text-emerald-800 transition-colors cursor-pointer"
+                    >
+                      Restore
+                    </button>
+                    <button
+                      @click="forceDeleteProduct(p)"
+                      class="font-medium text-rose-600 hover:text-rose-800 transition-colors cursor-pointer"
+                    >
+                      Delete forever
+                    </button>
+                  </template>
+                  <span v-else class="text-zinc-400">-</span>
                 </template>
-                <span v-else class="text-gray-400">-</span>
-              </template>
-              <template v-else>
-                <button @click="detailProduct = p" class="mr-3 text-gray-700 hover:underline">
-                  View
-                </button>
-                <template v-if="auth.canManage">
-                  <button @click="openSuppliers(p)" class="mr-3 text-gray-600 hover:underline">
-                    Suppliers
+                <template v-else>
+                  <button
+                    @click="detailProduct = p"
+                    class="mr-3 font-medium text-zinc-700 hover:text-zinc-900 transition-colors cursor-pointer"
+                  >
+                    View
                   </button>
-                  <button @click="openEdit(p)" class="mr-3 text-blue-600 hover:underline">
-                    Edit
-                  </button>
-                  <button @click="remove(p)" class="text-red-600 hover:underline">Delete</button>
+                  <template v-if="auth.canManage">
+                    <button
+                      @click="openSuppliers(p)"
+                      class="mr-3 font-medium text-zinc-500 hover:text-zinc-800 transition-colors cursor-pointer"
+                    >
+                      Suppliers
+                    </button>
+                    <button
+                      @click="openEdit(p)"
+                      class="mr-3 font-medium text-zinc-900 hover:text-zinc-600 transition-colors cursor-pointer"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      @click="remove(p)"
+                      class="font-medium text-rose-600 hover:text-rose-800 transition-colors cursor-pointer"
+                    >
+                      Delete
+                    </button>
+                  </template>
                 </template>
-              </template>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
-    <div v-if="meta && meta.last_page > 1" class="mt-4 flex items-center justify-between text-sm">
-      <span class="text-gray-600"
-        >Page {{ meta.current_page }} of {{ meta.last_page }} ({{ meta.total }} total)</span
-      >
+    <div
+      v-if="meta && meta.last_page > 1"
+      class="flex items-center justify-between text-xs text-zinc-500 pt-1"
+    >
+      <span>Page {{ meta.current_page }} of {{ meta.last_page }} ({{ meta.total }} total)</span>
       <div class="flex gap-2">
         <button
           :disabled="meta.current_page <= 1"
           @click="go(meta.current_page - 1)"
-          class="rounded border bg-white px-3 py-1 disabled:opacity-50"
+          class="rounded-xl border border-zinc-200 bg-white px-3 py-1.5 font-medium text-zinc-700 hover:bg-zinc-50 disabled:opacity-40 transition-colors shadow-2xs cursor-pointer"
         >
           Previous
         </button>
         <button
           :disabled="meta.current_page >= meta.last_page"
           @click="go(meta.current_page + 1)"
-          class="rounded border bg-white px-3 py-1 disabled:opacity-50"
+          class="rounded-xl border border-zinc-200 bg-white px-3 py-1.5 font-medium text-zinc-700 hover:bg-zinc-50 disabled:opacity-40 transition-colors shadow-2xs cursor-pointer"
         >
           Next
         </button>
@@ -536,34 +592,54 @@ onMounted(() => {
       role="dialog"
       aria-modal="true"
       aria-label="Product form"
-      class="fixed inset-0 z-10 flex items-center justify-center overflow-y-auto bg-black/40 p-4"
+      class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-zinc-950/40 backdrop-blur-xs p-4"
     >
       <form
         @submit.prevent="save"
-        class="my-8 w-full max-w-2xl space-y-4 rounded-lg bg-white p-6 shadow-lg"
+        class="my-8 w-full max-w-2xl space-y-4 rounded-2xl bg-white p-6 sm:p-7 shadow-xl border border-zinc-200/80"
       >
-        <h3 class="text-lg font-semibold">{{ editingId ? 'Edit product' : 'New product' }}</h3>
+        <div class="flex items-center justify-between border-b border-zinc-100 pb-3.5">
+          <h3 class="text-base font-bold text-zinc-900">
+            {{ editingId ? 'Edit product' : 'New product' }}
+          </h3>
+          <button
+            type="button"
+            @click="showForm = false"
+            class="rounded-lg p-1 text-zinc-400 hover:text-zinc-700 cursor-pointer"
+          >
+            <svg
+              class="h-4 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
 
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label class="mb-1 block text-sm font-medium">Name</label>
+            <label class="mb-1 block text-xs font-semibold text-zinc-700">Name</label>
             <input
               v-model="form.name"
               type="text"
-              class="w-full rounded border border-gray-300 px-3 py-2"
+              required
+              class="w-full rounded-xl border border-zinc-200 px-3.5 py-2 text-sm text-zinc-900 placeholder:text-zinc-400 shadow-2xs focus:border-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-900 transition-colors"
             />
-            <p v-if="errors.name" class="mt-1 text-sm text-red-600">{{ errors.name[0] }}</p>
+            <p v-if="errors.name" class="mt-1 text-xs text-rose-600">{{ errors.name[0] }}</p>
           </div>
           <div>
-            <label class="mb-1 block text-sm font-medium">Category</label>
+            <label class="mb-1 block text-xs font-semibold text-zinc-700">Category</label>
             <select
               v-model="form.category_id"
-              class="w-full rounded border border-gray-300 bg-white px-3 py-2"
+              class="w-full rounded-xl border border-zinc-200 bg-white px-3.5 py-2 text-sm text-zinc-800 shadow-2xs focus:border-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-900 transition-colors"
             >
               <option value="">None</option>
               <option v-for="c in categories" :key="c.id" :value="c.id">{{ c.name }}</option>
             </select>
-            <p v-if="errors.category_id" class="mt-1 text-sm text-red-600">
+            <p v-if="errors.category_id" class="mt-1 text-xs text-rose-600">
               {{ errors.category_id[0] }}
             </p>
           </div>
@@ -571,119 +647,127 @@ onMounted(() => {
 
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label class="mb-1 block text-sm font-medium">SKU</label>
+            <label class="mb-1 block text-xs font-semibold text-zinc-700">SKU</label>
             <input
               v-model="form.sku"
               type="text"
               placeholder="Leave blank to auto-generate"
-              class="w-full rounded border border-gray-300 px-3 py-2"
+              class="w-full rounded-xl border border-zinc-200 px-3.5 py-2 text-sm text-zinc-900 placeholder:text-zinc-400 shadow-2xs focus:border-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-900 transition-colors"
             />
-            <p v-if="errors.sku" class="mt-1 text-sm text-red-600">{{ errors.sku[0] }}</p>
+            <p v-if="errors.sku" class="mt-1 text-xs text-rose-600">{{ errors.sku[0] }}</p>
           </div>
           <div>
-            <label class="mb-1 block text-sm font-medium">Barcode</label>
+            <label class="mb-1 block text-xs font-semibold text-zinc-700">Barcode</label>
             <input
               v-model="form.barcode"
               type="text"
-              class="w-full rounded border border-gray-300 px-3 py-2"
+              class="w-full rounded-xl border border-zinc-200 px-3.5 py-2 text-sm text-zinc-900 placeholder:text-zinc-400 shadow-2xs focus:border-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-900 transition-colors"
             />
-            <p v-if="errors.barcode" class="mt-1 text-sm text-red-600">{{ errors.barcode[0] }}</p>
+            <p v-if="errors.barcode" class="mt-1 text-xs text-rose-600">{{ errors.barcode[0] }}</p>
           </div>
         </div>
 
-        <div class="grid grid-cols-4 gap-4">
+        <div class="grid grid-cols-4 gap-3 sm:gap-4">
           <div>
-            <label class="mb-1 block text-sm font-medium">Unit</label>
+            <label class="mb-1 block text-xs font-semibold text-zinc-700">Unit</label>
             <input
               v-model="form.unit"
               type="text"
-              class="w-full rounded border border-gray-300 px-3 py-2"
+              class="w-full rounded-xl border border-zinc-200 px-3.5 py-2 text-sm text-zinc-900 shadow-2xs focus:border-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-900 transition-colors"
             />
-            <p v-if="errors.unit" class="mt-1 text-sm text-red-600">{{ errors.unit[0] }}</p>
+            <p v-if="errors.unit" class="mt-1 text-xs text-rose-600">{{ errors.unit[0] }}</p>
           </div>
           <div>
-            <label class="mb-1 block text-sm font-medium">Cost</label>
+            <label class="mb-1 block text-xs font-semibold text-zinc-700">Cost</label>
             <input
               v-model="form.cost_price"
               type="number"
               step="0.01"
               min="0"
-              class="w-full rounded border border-gray-300 px-3 py-2"
+              class="w-full rounded-xl border border-zinc-200 px-3.5 py-2 text-sm text-zinc-900 shadow-2xs focus:border-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-900 transition-colors"
             />
-            <p v-if="errors.cost_price" class="mt-1 text-sm text-red-600">
+            <p v-if="errors.cost_price" class="mt-1 text-xs text-rose-600">
               {{ errors.cost_price[0] }}
             </p>
           </div>
           <div>
-            <label class="mb-1 block text-sm font-medium">Sell</label>
+            <label class="mb-1 block text-xs font-semibold text-zinc-700">Sell</label>
             <input
               v-model="form.sell_price"
               type="number"
               step="0.01"
               min="0"
-              class="w-full rounded border border-gray-300 px-3 py-2"
+              class="w-full rounded-xl border border-zinc-200 px-3.5 py-2 text-sm text-zinc-900 shadow-2xs focus:border-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-900 transition-colors"
             />
-            <p v-if="errors.sell_price" class="mt-1 text-sm text-red-600">
+            <p v-if="errors.sell_price" class="mt-1 text-xs text-rose-600">
               {{ errors.sell_price[0] }}
             </p>
           </div>
           <div>
-            <label class="mb-1 block text-sm font-medium">Reorder level</label>
+            <label class="mb-1 block text-xs font-semibold text-zinc-700">Reorder level</label>
             <input
               v-model="form.reorder_level"
               type="number"
               min="0"
-              class="w-full rounded border border-gray-300 px-3 py-2"
+              class="w-full rounded-xl border border-zinc-200 px-3.5 py-2 text-sm text-zinc-900 shadow-2xs focus:border-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-900 transition-colors"
             />
-            <p v-if="errors.reorder_level" class="mt-1 text-sm text-red-600">
+            <p v-if="errors.reorder_level" class="mt-1 text-xs text-rose-600">
               {{ errors.reorder_level[0] }}
             </p>
           </div>
         </div>
 
         <div>
-          <label class="mb-1 block text-sm font-medium">Description</label>
+          <label class="mb-1 block text-xs font-semibold text-zinc-700">Description</label>
           <textarea
             v-model="form.description"
             rows="2"
-            class="w-full rounded border border-gray-300 px-3 py-2"
+            class="w-full rounded-xl border border-zinc-200 px-3.5 py-2 text-sm text-zinc-900 shadow-2xs focus:border-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-900 transition-colors"
           ></textarea>
-          <p v-if="errors.description" class="mt-1 text-sm text-red-600">
+          <p v-if="errors.description" class="mt-1 text-xs text-rose-600">
             {{ errors.description[0] }}
           </p>
         </div>
 
         <div class="flex items-start gap-4">
           <div class="flex-1">
-            <label class="mb-1 block text-sm font-medium">Image</label>
+            <label class="mb-1 block text-xs font-semibold text-zinc-700">Image</label>
             <input
               type="file"
               accept="image/*"
               @change="onFileChange"
-              class="block w-full text-sm"
+              class="block w-full text-xs text-zinc-500 file:mr-3 file:rounded-xl file:border file:border-zinc-200 file:bg-zinc-50 file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-zinc-700 hover:file:bg-zinc-100"
             />
-            <p v-if="errors.image" class="mt-1 text-sm text-red-600">{{ errors.image[0] }}</p>
+            <p v-if="errors.image" class="mt-1 text-xs text-rose-600">{{ errors.image[0] }}</p>
           </div>
           <img
             v-if="imagePreview"
             :src="imagePreview"
             alt=""
-            class="h-16 w-16 rounded object-cover"
+            class="h-14 w-14 rounded-xl object-cover border border-zinc-200"
           />
         </div>
 
-        <label class="flex items-center gap-2 text-sm">
-          <input v-model="form.is_active" type="checkbox" class="h-4 w-4 rounded border-gray-300" />
+        <label class="flex items-center gap-2 text-xs sm:text-sm text-zinc-700 cursor-pointer">
+          <input
+            v-model="form.is_active"
+            type="checkbox"
+            class="h-4 w-4 rounded border-zinc-300 text-zinc-900 focus:ring-zinc-900"
+          />
           Active
         </label>
 
-        <div class="flex justify-end gap-2">
-          <button type="button" @click="showForm = false" class="rounded border px-4 py-2 text-sm">
+        <div class="flex justify-end gap-2 pt-2 border-t border-zinc-100">
+          <button
+            type="button"
+            @click="showForm = false"
+            class="rounded-xl border border-zinc-200 bg-white px-4 py-2 text-xs font-semibold text-zinc-700 hover:bg-zinc-50 cursor-pointer shadow-2xs"
+          >
             Cancel
           </button>
           <button
             :disabled="saving"
-            class="rounded bg-blue-600 px-4 py-2 text-sm text-white disabled:opacity-50"
+            class="rounded-xl bg-zinc-900 px-4 py-2 text-xs font-semibold text-white hover:bg-zinc-800 disabled:opacity-50 transition-colors shadow-2xs cursor-pointer"
           >
             {{ saving ? 'Saving...' : 'Save' }}
           </button>
@@ -697,57 +781,77 @@ onMounted(() => {
       role="dialog"
       aria-modal="true"
       aria-label="Product suppliers"
-      class="fixed inset-0 z-10 flex items-center justify-center bg-black/40 p-4"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-zinc-950/40 backdrop-blur-xs p-4"
     >
-      <div class="flex max-h-[85vh] w-full max-w-2xl flex-col rounded-lg bg-white p-6 shadow-lg">
-        <div class="mb-4 flex items-center justify-between">
+      <div
+        class="flex max-h-[85vh] w-full max-w-2xl flex-col rounded-2xl bg-white p-6 sm:p-7 shadow-xl border border-zinc-200/80"
+      >
+        <div class="mb-4 flex items-center justify-between border-b border-zinc-100 pb-3.5">
           <div>
-            <h3 class="text-lg font-semibold">Suppliers</h3>
-            <p class="text-sm text-gray-500">{{ supplierProduct?.name }}</p>
+            <h3 class="text-base font-bold text-zinc-900">Suppliers</h3>
+            <p class="text-xs text-zinc-500 mt-0.5">{{ supplierProduct?.name }}</p>
           </div>
-          <button @click="showSuppliers = false" class="rounded border px-3 py-1 text-sm">
+          <button
+            @click="showSuppliers = false"
+            class="rounded-xl border border-zinc-200 bg-white px-3 py-1.5 text-xs font-semibold text-zinc-700 hover:bg-zinc-50 cursor-pointer shadow-2xs"
+          >
             Close
           </button>
         </div>
 
-        <div class="overflow-y-auto">
-          <table class="w-full text-left text-sm">
-            <thead class="border-b bg-gray-50 text-gray-600">
+        <div class="overflow-y-auto rounded-xl border border-zinc-200/80">
+          <table class="w-full text-left text-xs sm:text-sm">
+            <thead
+              class="border-b border-zinc-200/60 bg-zinc-50/75 text-[11px] font-semibold uppercase tracking-wider text-zinc-400"
+            >
               <tr>
-                <th scope="col" class="px-3 py-2">Supplier</th>
-                <th scope="col" class="px-3 py-2">Supplier SKU</th>
-                <th scope="col" class="px-3 py-2">Cost</th>
-                <th scope="col" class="px-3 py-2">Lead</th>
-                <th scope="col" class="px-3 py-2">MOQ</th>
-                <th scope="col" class="px-3 py-2">Preferred</th>
-                <th scope="col" class="px-3 py-2 text-right">Actions</th>
+                <th scope="col" class="px-3.5 py-2.5">Supplier</th>
+                <th scope="col" class="px-3.5 py-2.5">Supplier SKU</th>
+                <th scope="col" class="px-3.5 py-2.5">Cost</th>
+                <th scope="col" class="px-3.5 py-2.5">Lead</th>
+                <th scope="col" class="px-3.5 py-2.5">MOQ</th>
+                <th scope="col" class="px-3.5 py-2.5">Preferred</th>
+                <th scope="col" class="px-3.5 py-2.5 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody class="divide-y divide-zinc-100">
               <tr v-if="!supplierLinks.length">
-                <td colspan="7" class="px-3 py-4 text-center text-gray-500">
+                <td colspan="7" class="px-3.5 py-6 text-center text-xs text-zinc-400">
                   No suppliers linked yet.
                 </td>
               </tr>
-              <tr v-else v-for="l in supplierLinks" :key="l.id" class="border-b last:border-0">
-                <td class="px-3 py-2 font-medium">{{ l.name }}</td>
-                <td class="px-3 py-2 text-gray-600">{{ l.supplier_sku ?? '-' }}</td>
-                <td class="px-3 py-2 text-gray-600">{{ l.unit_cost ?? '-' }}</td>
-                <td class="px-3 py-2 text-gray-600">{{ l.lead_time_days ?? '-' }}</td>
-                <td class="px-3 py-2 text-gray-600">{{ l.min_order_quantity ?? '-' }}</td>
-                <td class="px-3 py-2">
+              <tr
+                v-else
+                v-for="l in supplierLinks"
+                :key="l.id"
+                class="hover:bg-zinc-50/50 transition-colors"
+              >
+                <td class="px-3.5 py-2.5 font-medium text-zinc-900">{{ l.name }}</td>
+                <td class="px-3.5 py-2.5 font-mono text-xs text-zinc-500">
+                  {{ l.supplier_sku ?? '-' }}
+                </td>
+                <td class="px-3.5 py-2.5 text-zinc-600">{{ l.unit_cost ?? '-' }}</td>
+                <td class="px-3.5 py-2.5 text-zinc-600">{{ l.lead_time_days ?? '-' }}</td>
+                <td class="px-3.5 py-2.5 text-zinc-600">{{ l.min_order_quantity ?? '-' }}</td>
+                <td class="px-3.5 py-2.5">
                   <span
                     v-if="l.is_preferred"
-                    class="rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700"
+                    class="inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold text-emerald-700 ring-1 ring-emerald-600/20"
                     >Preferred</span
                   >
-                  <span v-else class="text-gray-400">-</span>
+                  <span v-else class="text-zinc-400">-</span>
                 </td>
-                <td class="px-3 py-2 text-right">
-                  <button @click="editLink(l)" class="mr-3 text-blue-600 hover:underline">
+                <td class="px-3.5 py-2.5 text-right">
+                  <button
+                    @click="editLink(l)"
+                    class="mr-3 font-medium text-zinc-900 hover:text-zinc-600 cursor-pointer"
+                  >
                     Edit
                   </button>
-                  <button @click="removeLink(l)" class="text-red-600 hover:underline">
+                  <button
+                    @click="removeLink(l)"
+                    class="font-medium text-rose-600 hover:text-rose-800 cursor-pointer"
+                  >
                     Remove
                   </button>
                 </td>
@@ -756,90 +860,90 @@ onMounted(() => {
           </table>
         </div>
 
-        <form @submit.prevent="saveLink" class="mt-4 space-y-3 border-t pt-4">
-          <h4 class="text-sm font-semibold">
+        <form @submit.prevent="saveLink" class="mt-4 space-y-3 border-t border-zinc-100 pt-4">
+          <h4 class="text-xs font-bold uppercase tracking-wider text-zinc-500">
             {{ editingSupplierId ? 'Edit link' : 'Add supplier' }}
           </h4>
 
           <div class="grid grid-cols-2 gap-3">
             <div>
-              <label class="mb-1 block text-xs font-medium">Supplier</label>
+              <label class="mb-1 block text-xs font-semibold text-zinc-700">Supplier</label>
               <select
                 v-model="linkForm.supplier_id"
                 :disabled="!!editingSupplierId"
-                class="w-full rounded border border-gray-300 bg-white px-3 py-2 text-sm disabled:bg-gray-100"
+                class="w-full rounded-xl border border-zinc-200 bg-white px-3 py-2 text-xs sm:text-sm disabled:bg-zinc-100"
               >
                 <option value="">Select supplier</option>
                 <option v-for="s in suppliersOptions" :key="s.id" :value="s.id">
                   {{ s.name }}
                 </option>
               </select>
-              <p v-if="linkErrors.supplier_id" class="mt-1 text-xs text-red-600">
+              <p v-if="linkErrors.supplier_id" class="mt-1 text-xs text-rose-600">
                 {{ linkErrors.supplier_id[0] }}
               </p>
             </div>
             <div>
-              <label class="mb-1 block text-xs font-medium">Supplier SKU</label>
+              <label class="mb-1 block text-xs font-semibold text-zinc-700">Supplier SKU</label>
               <input
                 v-model="linkForm.supplier_sku"
                 type="text"
-                class="w-full rounded border border-gray-300 px-3 py-2 text-sm"
+                class="w-full rounded-xl border border-zinc-200 px-3 py-2 text-xs sm:text-sm text-zinc-900"
               />
             </div>
           </div>
 
           <div class="grid grid-cols-3 gap-3">
             <div>
-              <label class="mb-1 block text-xs font-medium">Unit cost</label>
+              <label class="mb-1 block text-xs font-semibold text-zinc-700">Unit cost</label>
               <input
                 v-model="linkForm.unit_cost"
                 type="number"
                 step="0.01"
                 min="0"
-                class="w-full rounded border border-gray-300 px-3 py-2 text-sm"
+                class="w-full rounded-xl border border-zinc-200 px-3 py-2 text-xs sm:text-sm text-zinc-900"
               />
             </div>
             <div>
-              <label class="mb-1 block text-xs font-medium">Lead time (days)</label>
+              <label class="mb-1 block text-xs font-semibold text-zinc-700">Lead time (days)</label>
               <input
                 v-model="linkForm.lead_time_days"
                 type="number"
                 min="0"
-                class="w-full rounded border border-gray-300 px-3 py-2 text-sm"
+                class="w-full rounded-xl border border-zinc-200 px-3 py-2 text-xs sm:text-sm text-zinc-900"
               />
             </div>
             <div>
-              <label class="mb-1 block text-xs font-medium">Min order qty</label>
+              <label class="mb-1 block text-xs font-semibold text-zinc-700">Min order qty</label>
               <input
                 v-model="linkForm.min_order_quantity"
                 type="number"
                 min="0"
-                class="w-full rounded border border-gray-300 px-3 py-2 text-sm"
+                class="w-full rounded-xl border border-zinc-200 px-3 py-2 text-xs sm:text-sm text-zinc-900"
               />
             </div>
           </div>
 
-          <label class="flex items-center gap-2 text-sm">
+          <label class="flex items-center gap-2 text-xs sm:text-sm text-zinc-700 cursor-pointer">
             <input
               v-model="linkForm.is_preferred"
               type="checkbox"
-              class="h-4 w-4 rounded border-gray-300"
+              class="h-4 w-4 rounded border-zinc-300 text-zinc-900 focus:ring-zinc-900"
             />
             Preferred supplier
           </label>
 
-          <div class="flex justify-end gap-2">
+          <div class="flex justify-end gap-2 pt-1">
             <button
               v-if="editingSupplierId"
               type="button"
               @click="resetLinkForm"
-              class="rounded border px-3 py-1.5 text-sm"
+              class="rounded-xl border border-zinc-200 bg-white px-3.5 py-1.5 text-xs font-semibold text-zinc-700 hover:bg-zinc-50 cursor-pointer shadow-2xs"
             >
               Cancel edit
             </button>
             <button
               :disabled="savingLink"
-              class="rounded bg-blue-600 px-4 py-1.5 text-sm text-white disabled:opacity-50"
+              class="rounded-xl bg-zinc-900 px-4 py-1.5 text-xs font-semibold text-white hover:bg-zinc-800 disabled:opacity-50 transition-colors shadow-2xs cursor-pointer"
             >
               {{ savingLink ? 'Saving...' : editingSupplierId ? 'Update' : 'Add' }}
             </button>

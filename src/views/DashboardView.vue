@@ -80,7 +80,7 @@ function formatDate(dateString) {
 
 // Status styling for sales orders
 const salesStatusStyles = {
-  draft: 'bg-gray-100 text-gray-700 ring-1 ring-gray-600/20',
+  draft: 'bg-zinc-100 text-zinc-700 ring-1 ring-zinc-300/60',
   confirmed: 'bg-blue-50 text-blue-700 ring-1 ring-blue-600/20',
   partially_shipped: 'bg-amber-50 text-amber-700 ring-1 ring-amber-600/20',
   shipped: 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-600/20',
@@ -89,7 +89,7 @@ const salesStatusStyles = {
 
 // Status styling for purchase orders
 const purchaseStatusStyles = {
-  draft: 'bg-gray-100 text-gray-700 ring-1 ring-gray-600/20',
+  draft: 'bg-zinc-100 text-zinc-700 ring-1 ring-zinc-300/60',
   partially_received: 'bg-amber-50 text-amber-700 ring-1 ring-amber-600/20',
   received: 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-600/20',
   cancelled: 'bg-rose-50 text-rose-700 ring-1 ring-rose-600/20',
@@ -100,17 +100,17 @@ const movementStyles = {
   in: 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-600/20',
   out: 'bg-rose-50 text-rose-700 ring-1 ring-rose-600/20',
   adjustment: 'bg-amber-50 text-amber-700 ring-1 ring-amber-600/20',
-  transfer_in: 'bg-indigo-50 text-indigo-700 ring-1 ring-indigo-600/20',
-  transfer_out: 'bg-blue-50 text-blue-700 ring-1 ring-blue-600/20',
+  transfer_in: 'bg-zinc-100 text-zinc-800 ring-1 ring-zinc-300/60',
+  transfer_out: 'bg-zinc-100 text-zinc-800 ring-1 ring-zinc-300/60',
 }
 
 // Audit log action badges
 const activityStyles = {
   created: 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-600/20',
-  updated: 'bg-blue-50 text-blue-700 ring-1 ring-blue-600/20',
+  updated: 'bg-zinc-100 text-zinc-800 ring-1 ring-zinc-300/60',
   deleted: 'bg-rose-50 text-rose-700 ring-1 ring-rose-600/20',
   restored: 'bg-amber-50 text-amber-700 ring-1 ring-amber-600/20',
-  shipped: 'bg-indigo-50 text-indigo-700 ring-1 ring-indigo-600/20',
+  shipped: 'bg-blue-50 text-blue-700 ring-1 ring-blue-600/20',
   received: 'bg-teal-50 text-teal-700 ring-1 ring-teal-600/20',
 }
 
@@ -202,40 +202,40 @@ onUnmounted(() => {
     <!-- HEADER BAR: Welcome greeting, status, date & quick buttons    -->
     <!-- ============================================================ -->
     <div
-      class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between rounded-xl bg-white p-5 shadow-xs border border-gray-200/80"
+      class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between rounded-2xl bg-white p-5 sm:p-6 shadow-2xs border border-zinc-200/80"
     >
       <div>
         <div class="flex items-center gap-2.5">
-          <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-gray-900">
+          <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-zinc-900">
             Operations Dashboard
           </h1>
           <span
             class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium capitalize"
             :class="
               auth.user?.role === 'admin'
-                ? 'bg-purple-50 text-purple-700 ring-1 ring-purple-600/20'
+                ? 'bg-zinc-900 text-white'
                 : auth.user?.role === 'manager'
-                  ? 'bg-blue-50 text-blue-700 ring-1 ring-blue-600/20'
-                  : 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-600/20'
+                  ? 'bg-zinc-100 text-zinc-800 ring-1 ring-zinc-300/70'
+                  : 'bg-zinc-100 text-zinc-700 ring-1 ring-zinc-200'
             "
           >
             <span
               class="h-1.5 w-1.5 rounded-full"
               :class="
                 auth.user?.role === 'admin'
-                  ? 'bg-purple-600'
+                  ? 'bg-white'
                   : auth.user?.role === 'manager'
-                    ? 'bg-blue-600'
-                    : 'bg-emerald-600'
+                    ? 'bg-zinc-700'
+                    : 'bg-zinc-500'
               "
             ></span>
             {{ auth.user?.role || 'Staff' }}
           </span>
         </div>
-        <p class="mt-1 text-xs sm:text-sm text-gray-500 flex items-center gap-2">
+        <p class="mt-1 text-xs sm:text-sm text-zinc-500 flex items-center gap-2">
           <span>Welcome back, {{ auth.user?.name || 'User' }}</span>
-          <span class="text-gray-300">•</span>
-          <span class="text-gray-600 font-medium">{{ currentDateFormatted }}</span>
+          <span class="text-zinc-300">•</span>
+          <span class="text-zinc-600 font-medium">{{ currentDateFormatted }}</span>
         </p>
       </div>
 
@@ -244,20 +244,25 @@ onUnmounted(() => {
         <button
           type="button"
           @click="openScanModal"
-          class="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 bg-gray-50/80 px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-100 transition-colors shadow-2xs"
+          class="inline-flex items-center gap-1.5 rounded-xl border border-zinc-200 bg-zinc-50/80 px-3 py-2 text-xs font-semibold text-zinc-700 hover:bg-zinc-100 transition-colors shadow-2xs cursor-pointer"
           title="Scan barcode or look up SKU (Hotkey: /)"
         >
-          <svg class="h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg
+            class="h-3.5 w-3.5 text-zinc-500"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
             <path
               stroke-linecap="round"
               stroke-linejoin="round"
-              stroke-width="2"
+              stroke-width="1.8"
               d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"
             />
           </svg>
           <span>Scan / Search SKU</span>
           <kbd
-            class="rounded border border-gray-300 bg-white px-1 py-0.2 text-[10px] font-mono text-gray-500"
+            class="rounded border border-zinc-200 bg-white px-1.5 py-0.2 text-[10px] font-mono text-zinc-400"
           >
             /
           </kbd>
@@ -267,16 +272,16 @@ onUnmounted(() => {
           type="button"
           @click="loadDashboard(true)"
           :disabled="refreshing"
-          class="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors shadow-2xs disabled:opacity-50"
+          class="inline-flex items-center gap-1.5 rounded-xl border border-zinc-200 bg-white px-3 py-2 text-xs font-semibold text-zinc-700 hover:bg-zinc-50 transition-colors shadow-2xs disabled:opacity-50 cursor-pointer"
           title="Refresh statistics"
         >
           <svg
-            class="h-3.5 w-3.5 text-gray-500"
+            class="h-3.5 w-3.5 text-zinc-500"
             :class="{ 'animate-spin': refreshing }"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
-            stroke-width="2"
+            stroke-width="1.8"
           >
             <path
               stroke-linecap="round"
@@ -290,14 +295,14 @@ onUnmounted(() => {
         <RouterLink
           v-if="canCreateSalesOrder"
           to="/sales-orders"
-          class="inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-2 text-xs font-semibold text-white hover:bg-blue-700 transition-colors shadow-xs"
+          class="inline-flex items-center gap-1.5 rounded-xl bg-zinc-900 px-3.5 py-2 text-xs font-semibold text-white hover:bg-zinc-800 transition-colors shadow-2xs"
         >
           <svg
             class="h-3.5 w-3.5"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
-            stroke-width="2.5"
+            stroke-width="2.2"
           >
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
           </svg>
@@ -307,14 +312,14 @@ onUnmounted(() => {
         <RouterLink
           v-if="canCreatePurchaseOrder"
           to="/purchase-orders"
-          class="inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 px-3 py-2 text-xs font-semibold text-white hover:bg-indigo-700 transition-colors shadow-xs"
+          class="inline-flex items-center gap-1.5 rounded-xl border border-zinc-200 bg-white px-3.5 py-2 text-xs font-semibold text-zinc-800 hover:bg-zinc-50 transition-colors shadow-2xs"
         >
           <svg
             class="h-3.5 w-3.5"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
-            stroke-width="2.5"
+            stroke-width="2.2"
           >
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
           </svg>
@@ -326,11 +331,11 @@ onUnmounted(() => {
     <!-- Error Banner -->
     <div
       v-if="error"
-      class="flex items-center justify-between rounded-xl bg-red-50 p-4 border border-red-200 text-red-800 text-sm"
+      class="flex items-center justify-between rounded-2xl bg-rose-50 p-4 border border-rose-200/70 text-rose-800 text-sm"
     >
       <div class="flex items-center gap-3">
         <svg
-          class="h-5 w-5 text-red-600 shrink-0"
+          class="h-5 w-5 text-rose-600 shrink-0"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -347,7 +352,7 @@ onUnmounted(() => {
       <button
         type="button"
         @click="loadDashboard()"
-        class="text-xs font-semibold underline hover:text-red-900"
+        class="text-xs font-semibold underline hover:text-rose-900 cursor-pointer"
       >
         Retry
       </button>
@@ -359,19 +364,19 @@ onUnmounted(() => {
         <div
           v-for="i in 4"
           :key="i"
-          class="h-32 rounded-xl bg-white p-5 shadow-xs border border-gray-100 animate-pulse"
+          class="h-32 rounded-2xl bg-white p-5 shadow-2xs border border-zinc-100 animate-pulse"
         >
-          <div class="h-4 w-24 bg-gray-200 rounded"></div>
-          <div class="mt-4 h-8 w-32 bg-gray-300 rounded"></div>
-          <div class="mt-2 h-3 w-40 bg-gray-200 rounded"></div>
+          <div class="h-4 w-24 bg-zinc-200 rounded"></div>
+          <div class="mt-4 h-8 w-32 bg-zinc-200 rounded"></div>
+          <div class="mt-2 h-3 w-40 bg-zinc-100 rounded"></div>
         </div>
       </div>
       <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <div
-          class="h-64 rounded-xl bg-white p-5 shadow-xs border border-gray-100 animate-pulse"
+          class="h-64 rounded-2xl bg-white p-5 shadow-2xs border border-zinc-100 animate-pulse"
         ></div>
         <div
-          class="h-64 rounded-xl bg-white p-5 shadow-xs border border-gray-100 animate-pulse"
+          class="h-64 rounded-2xl bg-white p-5 shadow-2xs border border-zinc-100 animate-pulse"
         ></div>
       </div>
     </div>
@@ -384,21 +389,21 @@ onUnmounted(() => {
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <!-- KPI 1: Inventory Valuation -->
         <div
-          class="relative overflow-hidden rounded-xl bg-white p-5 shadow-xs border border-gray-200/80 transition-all hover:shadow-md"
+          class="relative overflow-hidden rounded-2xl bg-white p-5 shadow-2xs border border-zinc-200/80 transition-all hover:border-zinc-300"
         >
           <div class="flex items-center justify-between">
-            <span class="text-xs font-semibold uppercase tracking-wider text-gray-500">
+            <span class="text-[11px] font-semibold uppercase tracking-wider text-zinc-500">
               Inventory Value (Cost)
             </span>
             <div
-              class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600 ring-1 ring-blue-500/20"
+              class="flex h-9 w-9 items-center justify-center rounded-xl bg-zinc-100 text-zinc-700"
             >
               <svg
-                class="h-5 w-5"
+                class="h-4 w-4"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
-                stroke-width="2"
+                stroke-width="1.8"
               >
                 <path
                   stroke-linecap="round"
@@ -409,13 +414,13 @@ onUnmounted(() => {
             </div>
           </div>
           <div class="mt-3">
-            <p class="text-2xl sm:text-3xl font-extrabold tracking-tight text-gray-900">
+            <p class="text-2xl sm:text-3xl font-bold tracking-tight text-zinc-900">
               {{ money(data.metrics.cost_value) }}
             </p>
-            <div class="mt-2 flex items-center justify-between text-xs text-gray-500">
+            <div class="mt-2 flex items-center justify-between text-xs text-zinc-500">
               <span>Retail: {{ money(data.metrics.retail_value) }}</span>
               <span
-                class="inline-flex items-center gap-1 font-semibold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded ring-1 ring-emerald-600/20"
+                class="inline-flex items-center gap-1 font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full text-[11px] ring-1 ring-emerald-600/20"
                 title="Potential profit margin across physical stock"
               >
                 +{{ data.metrics.margin_percentage }}% margin
@@ -426,21 +431,21 @@ onUnmounted(() => {
 
         <!-- KPI 2: Stock Units Volume -->
         <div
-          class="relative overflow-hidden rounded-xl bg-white p-5 shadow-xs border border-gray-200/80 transition-all hover:shadow-md"
+          class="relative overflow-hidden rounded-2xl bg-white p-5 shadow-2xs border border-zinc-200/80 transition-all hover:border-zinc-300"
         >
           <div class="flex items-center justify-between">
-            <span class="text-xs font-semibold uppercase tracking-wider text-gray-500">
+            <span class="text-[11px] font-semibold uppercase tracking-wider text-zinc-500">
               Physical Stock Volume
             </span>
             <div
-              class="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 ring-1 ring-emerald-500/20"
+              class="flex h-9 w-9 items-center justify-center rounded-xl bg-zinc-100 text-zinc-700"
             >
               <svg
-                class="h-5 w-5"
+                class="h-4 w-4"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
-                stroke-width="2"
+                stroke-width="1.8"
               >
                 <path
                   stroke-linecap="round"
@@ -451,13 +456,13 @@ onUnmounted(() => {
             </div>
           </div>
           <div class="mt-3">
-            <p class="text-2xl sm:text-3xl font-extrabold tracking-tight text-gray-900">
+            <p class="text-2xl sm:text-3xl font-bold tracking-tight text-zinc-900">
               {{ (data.metrics.total_units || 0).toLocaleString() }}
-              <span class="text-sm font-normal text-gray-500">units</span>
+              <span class="text-sm font-normal text-zinc-500">units</span>
             </p>
-            <div class="mt-2 flex items-center justify-between text-xs text-gray-500">
+            <div class="mt-2 flex items-center justify-between text-xs text-zinc-500">
               <span>In {{ data.metrics.warehouses_count }} Warehouses</span>
-              <span class="text-gray-600 font-medium">
+              <span class="text-zinc-600 font-medium">
                 {{ data.metrics.products_count }} SKUs in {{ data.metrics.categories_count }} Cats
               </span>
             </div>
@@ -466,21 +471,21 @@ onUnmounted(() => {
 
         <!-- KPI 3: Sales Orders & Revenue -->
         <div
-          class="relative overflow-hidden rounded-xl bg-white p-5 shadow-xs border border-gray-200/80 transition-all hover:shadow-md"
+          class="relative overflow-hidden rounded-2xl bg-white p-5 shadow-2xs border border-zinc-200/80 transition-all hover:border-zinc-300"
         >
           <div class="flex items-center justify-between">
-            <span class="text-xs font-semibold uppercase tracking-wider text-gray-500">
+            <span class="text-[11px] font-semibold uppercase tracking-wider text-zinc-500">
               Sales & Fulfillment
             </span>
             <div
-              class="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 ring-1 ring-indigo-500/20"
+              class="flex h-9 w-9 items-center justify-center rounded-xl bg-zinc-100 text-zinc-700"
             >
               <svg
-                class="h-5 w-5"
+                class="h-4 w-4"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
-                stroke-width="2"
+                stroke-width="1.8"
               >
                 <path
                   stroke-linecap="round"
@@ -491,41 +496,41 @@ onUnmounted(() => {
             </div>
           </div>
           <div class="mt-3">
-            <p class="text-2xl sm:text-3xl font-extrabold tracking-tight text-gray-900">
+            <p class="text-2xl sm:text-3xl font-bold tracking-tight text-zinc-900">
               {{ money(data.metrics.sales_orders.revenue) }}
             </p>
-            <div class="mt-2 flex items-center justify-between text-xs text-gray-500">
+            <div class="mt-2 flex items-center justify-between text-xs text-zinc-500">
               <span>{{ data.metrics.sales_orders.total }} Orders total</span>
               <span
                 v-if="data.metrics.sales_orders.pending > 0"
-                class="font-semibold text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded ring-1 ring-blue-600/20"
+                class="font-semibold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-full text-[11px] ring-1 ring-blue-600/20"
               >
                 {{ data.metrics.sales_orders.pending }} pending dispatch
               </span>
-              <span v-else class="text-gray-500 font-medium">All shipped</span>
+              <span v-else class="text-zinc-500 font-medium">All shipped</span>
             </div>
           </div>
         </div>
 
         <!-- KPI 4: Stock Health & Low Stock Alerts -->
         <div
-          class="relative overflow-hidden rounded-xl bg-white p-5 shadow-xs border border-gray-200/80 transition-all hover:shadow-md"
+          class="relative overflow-hidden rounded-2xl bg-white p-5 shadow-2xs border border-zinc-200/80 transition-all hover:border-zinc-300"
         >
           <div class="flex items-center justify-between">
-            <span class="text-xs font-semibold uppercase tracking-wider text-gray-500">
+            <span class="text-[11px] font-semibold uppercase tracking-wider text-zinc-500">
               Stock Health & Alerts
             </span>
             <div
-              class="flex h-10 w-10 items-center justify-center rounded-xl ring-1"
+              class="flex h-9 w-9 items-center justify-center rounded-xl"
               :class="
                 data.metrics.low_stock_count > 0
-                  ? 'bg-rose-50 text-rose-600 ring-rose-500/20'
-                  : 'bg-emerald-50 text-emerald-600 ring-emerald-500/20'
+                  ? 'bg-rose-50 text-rose-600'
+                  : 'bg-emerald-50 text-emerald-600'
               "
             >
               <svg
                 v-if="data.metrics.low_stock_count > 0"
-                class="h-5 w-5"
+                class="h-4 w-4"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -539,7 +544,7 @@ onUnmounted(() => {
               </svg>
               <svg
                 v-else
-                class="h-5 w-5"
+                class="h-4 w-4"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -555,19 +560,19 @@ onUnmounted(() => {
           </div>
           <div class="mt-3">
             <p
-              class="text-2xl sm:text-3xl font-extrabold tracking-tight"
-              :class="data.metrics.low_stock_count > 0 ? 'text-rose-600' : 'text-gray-900'"
+              class="text-2xl sm:text-3xl font-bold tracking-tight"
+              :class="data.metrics.low_stock_count > 0 ? 'text-rose-600' : 'text-zinc-900'"
             >
               {{ data.metrics.low_stock_count }}
-              <span class="text-sm font-normal text-gray-500">items low</span>
+              <span class="text-sm font-normal text-zinc-500">items low</span>
             </p>
-            <div class="mt-2 flex items-center justify-between text-xs text-gray-500">
+            <div class="mt-2 flex items-center justify-between text-xs text-zinc-500">
               <span v-if="data.metrics.out_of_stock_count > 0" class="text-rose-600 font-semibold">
                 {{ data.metrics.out_of_stock_count }} out of stock
               </span>
               <span v-else class="text-emerald-600 font-medium">None out of stock</span>
 
-              <span class="text-gray-600">
+              <span class="text-zinc-600">
                 {{ data.metrics.purchase_orders.pending }} POs in transit
               </span>
             </div>
@@ -579,19 +584,21 @@ onUnmounted(() => {
       <!-- QUICK SHORTCUTS NAVIGATION ROW                               -->
       <!-- ============================================================ -->
       <div
-        class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6 rounded-xl bg-white p-3 shadow-xs border border-gray-200/80 text-xs font-medium text-gray-700"
+        class="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-6 rounded-2xl bg-white p-2.5 shadow-2xs border border-zinc-200/80 text-xs font-medium text-zinc-700"
       >
         <RouterLink
           to="/stock"
-          class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 hover:text-blue-600 transition-colors"
+          class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-zinc-100/70 hover:text-zinc-900 transition-colors group"
         >
-          <div class="p-1.5 rounded-md bg-blue-50 text-blue-600">
+          <div
+            class="p-1.5 rounded-lg bg-zinc-100 text-zinc-600 group-hover:bg-zinc-900 group-hover:text-white transition-colors"
+          >
             <svg
               class="h-4 w-4"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
-              stroke-width="2"
+              stroke-width="1.8"
             >
               <path
                 stroke-linecap="round"
@@ -605,15 +612,17 @@ onUnmounted(() => {
 
         <RouterLink
           to="/sales-orders"
-          class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 hover:text-indigo-600 transition-colors"
+          class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-zinc-100/70 hover:text-zinc-900 transition-colors group"
         >
-          <div class="p-1.5 rounded-md bg-indigo-50 text-indigo-600">
+          <div
+            class="p-1.5 rounded-lg bg-zinc-100 text-zinc-600 group-hover:bg-zinc-900 group-hover:text-white transition-colors"
+          >
             <svg
               class="h-4 w-4"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
-              stroke-width="2"
+              stroke-width="1.8"
             >
               <path
                 stroke-linecap="round"
@@ -627,15 +636,17 @@ onUnmounted(() => {
 
         <RouterLink
           to="/purchase-orders"
-          class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 hover:text-purple-600 transition-colors"
+          class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-zinc-100/70 hover:text-zinc-900 transition-colors group"
         >
-          <div class="p-1.5 rounded-md bg-purple-50 text-purple-600">
+          <div
+            class="p-1.5 rounded-lg bg-zinc-100 text-zinc-600 group-hover:bg-zinc-900 group-hover:text-white transition-colors"
+          >
             <svg
               class="h-4 w-4"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
-              stroke-width="2"
+              stroke-width="1.8"
             >
               <path
                 stroke-linecap="round"
@@ -649,15 +660,17 @@ onUnmounted(() => {
 
         <RouterLink
           to="/reports"
-          class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 hover:text-emerald-600 transition-colors"
+          class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-zinc-100/70 hover:text-zinc-900 transition-colors group"
         >
-          <div class="p-1.5 rounded-md bg-emerald-50 text-emerald-600">
+          <div
+            class="p-1.5 rounded-lg bg-zinc-100 text-zinc-600 group-hover:bg-zinc-900 group-hover:text-white transition-colors"
+          >
             <svg
               class="h-4 w-4"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
-              stroke-width="2"
+              stroke-width="1.8"
             >
               <path
                 stroke-linecap="round"
@@ -671,15 +684,17 @@ onUnmounted(() => {
 
         <RouterLink
           to="/customers"
-          class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 hover:text-amber-600 transition-colors"
+          class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-zinc-100/70 hover:text-zinc-900 transition-colors group"
         >
-          <div class="p-1.5 rounded-md bg-amber-50 text-amber-600">
+          <div
+            class="p-1.5 rounded-lg bg-zinc-100 text-zinc-600 group-hover:bg-zinc-900 group-hover:text-white transition-colors"
+          >
             <svg
               class="h-4 w-4"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
-              stroke-width="2"
+              stroke-width="1.8"
             >
               <path
                 stroke-linecap="round"
@@ -694,15 +709,17 @@ onUnmounted(() => {
         <button
           type="button"
           @click="openScanModal"
-          class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 hover:text-teal-600 transition-colors text-left"
+          class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-zinc-100/70 hover:text-zinc-900 transition-colors text-left cursor-pointer group"
         >
-          <div class="p-1.5 rounded-md bg-teal-50 text-teal-600">
+          <div
+            class="p-1.5 rounded-lg bg-zinc-100 text-zinc-600 group-hover:bg-zinc-900 group-hover:text-white transition-colors"
+          >
             <svg
               class="h-4 w-4"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
-              stroke-width="2"
+              stroke-width="1.8"
             >
               <path
                 stroke-linecap="round"
@@ -720,21 +737,21 @@ onUnmounted(() => {
       <!-- ============================================================ -->
       <div
         v-if="data.low_stock_items && data.low_stock_items.length > 0"
-        class="rounded-xl bg-white shadow-xs border border-rose-200/90 overflow-hidden"
+        class="rounded-2xl bg-white shadow-2xs border border-zinc-200/80 overflow-hidden"
       >
         <div
-          class="flex flex-col sm:flex-row sm:items-center sm:justify-between px-5 py-4 bg-rose-50/60 border-b border-rose-100 gap-2"
+          class="flex flex-col sm:flex-row sm:items-center sm:justify-between px-5 py-3.5 bg-rose-50/50 border-b border-rose-100/80 gap-2"
         >
           <div class="flex items-center gap-2.5">
             <div
-              class="flex h-8 w-8 items-center justify-center rounded-lg bg-rose-100 text-rose-700"
+              class="flex h-7 w-7 items-center justify-center rounded-lg bg-rose-100 text-rose-700"
             >
               <svg
                 class="h-4 w-4"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
-                stroke-width="2.2"
+                stroke-width="2"
               >
                 <path
                   stroke-linecap="round"
@@ -744,10 +761,10 @@ onUnmounted(() => {
               </svg>
             </div>
             <div>
-              <h2 class="text-sm font-bold text-gray-900">
+              <h2 class="text-xs sm:text-sm font-bold text-zinc-900">
                 Action Required: Low Stock & Reorder Alerts
               </h2>
-              <p class="text-xs text-rose-700">
+              <p class="text-[11px] text-rose-700">
                 {{ data.low_stock_items.length }} items are at or below their safety reorder
                 thresholds
               </p>
@@ -771,38 +788,38 @@ onUnmounted(() => {
         </div>
 
         <div class="overflow-x-auto">
-          <table class="w-full text-left text-xs text-gray-600">
+          <table class="w-full text-left text-xs text-zinc-600">
             <thead
-              class="bg-gray-50/70 border-b border-gray-100 font-semibold uppercase tracking-wider text-gray-500"
+              class="bg-zinc-50/75 border-b border-zinc-100 font-semibold uppercase tracking-wider text-zinc-400 text-[11px]"
             >
               <tr>
-                <th scope="col" class="py-3 px-5">Product & SKU</th>
-                <th scope="col" class="py-3 px-4">Category</th>
-                <th scope="col" class="py-3 px-4 text-right">In Stock</th>
-                <th scope="col" class="py-3 px-4 text-right">Reorder Level</th>
-                <th scope="col" class="py-3 px-4 text-right">Deficit</th>
-                <th scope="col" class="py-3 px-4 text-right">Cost Value</th>
-                <th scope="col" class="py-3 px-5 text-right">Actions</th>
+                <th scope="col" class="py-2.5 px-5">Product & SKU</th>
+                <th scope="col" class="py-2.5 px-4">Category</th>
+                <th scope="col" class="py-2.5 px-4 text-right">In Stock</th>
+                <th scope="col" class="py-2.5 px-4 text-right">Reorder Level</th>
+                <th scope="col" class="py-2.5 px-4 text-right">Deficit</th>
+                <th scope="col" class="py-2.5 px-4 text-right">Cost Value</th>
+                <th scope="col" class="py-2.5 px-5 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-gray-100">
+            <tbody class="divide-y divide-zinc-100">
               <tr
                 v-for="item in data.low_stock_items"
                 :key="item.id"
-                class="hover:bg-rose-50/30 transition-colors"
+                class="hover:bg-zinc-50/60 transition-colors"
               >
-                <td class="py-3 px-5 font-medium text-gray-900">
+                <td class="py-3 px-5 font-medium text-zinc-900">
                   <button
                     type="button"
                     @click="openProductDetail(item)"
-                    class="text-left group hover:text-blue-600 transition-colors"
+                    class="text-left group transition-colors cursor-pointer"
                   >
-                    <div class="font-semibold text-gray-900 group-hover:text-blue-600">
+                    <div class="font-semibold text-zinc-900 group-hover:text-zinc-600">
                       {{ item.name }}
                     </div>
-                    <div class="text-[11px] font-mono text-gray-400">
+                    <div class="text-[11px] font-mono text-zinc-400">
                       {{ item.sku }}
-                      <span v-if="item.barcode" class="ml-1 text-gray-300"
+                      <span v-if="item.barcode" class="ml-1 text-zinc-300"
                         >| {{ item.barcode }}</span
                       >
                     </div>
@@ -810,30 +827,30 @@ onUnmounted(() => {
                 </td>
                 <td class="py-3 px-4">
                   <span
-                    class="inline-block rounded-md bg-gray-100 px-2 py-0.5 text-[11px] font-medium text-gray-700"
+                    class="inline-block rounded-md bg-zinc-100 px-2 py-0.5 text-[11px] font-medium text-zinc-700"
                   >
                     {{ item.category_name }}
                   </span>
                 </td>
                 <td class="py-3 px-4 text-right">
                   <span
-                    class="inline-flex items-center gap-1 font-bold rounded-full px-2 py-0.5 text-xs"
+                    class="inline-flex items-center gap-1 font-semibold rounded-full px-2 py-0.5 text-xs"
                     :class="
                       item.stock_total === 0
-                        ? 'bg-rose-100 text-rose-800 ring-1 ring-rose-600/30'
-                        : 'bg-amber-100 text-amber-800 ring-1 ring-amber-600/30'
+                        ? 'bg-rose-50 text-rose-700 ring-1 ring-rose-600/20'
+                        : 'bg-amber-50 text-amber-700 ring-1 ring-amber-600/20'
                     "
                   >
                     {{ item.stock_total }} {{ item.unit }}
                   </span>
                 </td>
-                <td class="py-3 px-4 text-right font-medium text-gray-600">
+                <td class="py-3 px-4 text-right font-medium text-zinc-600">
                   {{ item.reorder_level }} {{ item.unit }}
                 </td>
                 <td class="py-3 px-4 text-right font-semibold text-rose-600">
                   -{{ item.deficit }} {{ item.unit }}
                 </td>
-                <td class="py-3 px-4 text-right font-medium text-gray-700">
+                <td class="py-3 px-4 text-right font-medium text-zinc-700">
                   {{ money(item.cost_price * item.stock_total) }}
                 </td>
                 <td class="py-3 px-5 text-right">
@@ -841,14 +858,14 @@ onUnmounted(() => {
                     <button
                       type="button"
                       @click="openProductDetail(item)"
-                      class="rounded-md border border-gray-200 px-2.5 py-1 text-[11px] font-semibold text-gray-700 hover:bg-gray-100 transition-colors"
+                      class="rounded-lg border border-zinc-200 bg-white px-2.5 py-1 text-[11px] font-semibold text-zinc-700 hover:bg-zinc-50 transition-colors cursor-pointer shadow-2xs"
                     >
                       Inspect
                     </button>
                     <RouterLink
                       v-if="canCreatePurchaseOrder"
                       to="/purchase-orders"
-                      class="rounded-md bg-indigo-50 border border-indigo-200 px-2.5 py-1 text-[11px] font-semibold text-indigo-700 hover:bg-indigo-100 transition-colors"
+                      class="rounded-lg bg-zinc-900 px-2.5 py-1 text-[11px] font-semibold text-white hover:bg-zinc-800 transition-colors shadow-2xs"
                     >
                       + Create PO
                     </RouterLink>
@@ -863,24 +880,24 @@ onUnmounted(() => {
       <!-- Healthy Stock State (when no low stock items) -->
       <div
         v-else
-        class="flex items-center justify-between rounded-xl bg-emerald-50/70 p-4 border border-emerald-200/90 text-emerald-900"
+        class="flex items-center justify-between rounded-2xl bg-emerald-50/60 p-4 border border-emerald-200/70 text-emerald-900"
       >
         <div class="flex items-center gap-3">
           <div
-            class="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-100 text-emerald-700"
+            class="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700"
           >
             <svg
-              class="h-5 w-5"
+              class="h-4 w-4"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
-              stroke-width="2.5"
+              stroke-width="2.2"
             >
               <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
             </svg>
           </div>
           <div>
-            <p class="text-sm font-bold text-gray-900">Inventory Levels are Optimal</p>
+            <p class="text-xs sm:text-sm font-bold text-zinc-900">Inventory Levels are Optimal</p>
             <p class="text-xs text-emerald-700">
               All products have sufficient on-hand stock exceeding safety reorder points.
             </p>
@@ -900,17 +917,17 @@ onUnmounted(() => {
       <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <!-- Warehouse Capacity & Distribution Card -->
         <div
-          class="rounded-xl bg-white p-5 shadow-xs border border-gray-200/80 flex flex-col justify-between"
+          class="rounded-2xl bg-white p-5 sm:p-6 shadow-2xs border border-zinc-200/80 flex flex-col justify-between"
         >
           <div>
-            <div class="flex items-center justify-between pb-3 border-b border-gray-100">
+            <div class="flex items-center justify-between pb-3.5 border-b border-zinc-100">
               <div class="flex items-center gap-2">
                 <svg
-                  class="h-4 w-4 text-blue-600"
+                  class="h-4 w-4 text-zinc-700"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
-                  stroke-width="2"
+                  stroke-width="1.8"
                 >
                   <path
                     stroke-linecap="round"
@@ -918,48 +935,48 @@ onUnmounted(() => {
                     d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
                   />
                 </svg>
-                <h2 class="text-sm font-bold text-gray-900">Warehouse Storage & Valuation</h2>
+                <h2 class="text-sm font-bold text-zinc-900">Warehouse Storage & Valuation</h2>
               </div>
               <RouterLink
                 to="/warehouses"
-                class="text-xs font-semibold text-blue-600 hover:text-blue-800"
+                class="text-xs font-semibold text-zinc-600 hover:text-zinc-900"
               >
                 Manage Warehouses &rarr;
               </RouterLink>
             </div>
 
-            <div class="mt-4 space-y-4">
+            <div class="mt-4 space-y-3">
               <div
                 v-for="w in data.warehouses"
                 :key="w.warehouse_id"
-                class="rounded-lg border border-gray-100 p-3 bg-gray-50/40 hover:bg-gray-50 transition-colors"
+                class="rounded-xl border border-zinc-200/70 p-3 bg-zinc-50/50 hover:bg-zinc-50 transition-colors"
               >
                 <div class="flex items-center justify-between text-xs">
-                  <div class="font-semibold text-gray-900 flex items-center gap-2">
+                  <div class="font-semibold text-zinc-900 flex items-center gap-2">
                     <span>{{ w.warehouse_name }}</span>
-                    <span class="text-[11px] font-normal text-gray-400"
+                    <span class="text-[11px] font-normal text-zinc-400"
                       >({{ w.products_count || 0 }} SKUs)</span
                     >
                   </div>
                   <div class="text-right">
-                    <span class="font-bold text-gray-900"
+                    <span class="font-bold text-zinc-900"
                       >{{ (w.units || 0).toLocaleString() }} units</span
                     >
-                    <span class="text-gray-400 ml-1.5 font-medium"
+                    <span class="text-zinc-400 ml-1.5 font-medium"
                       >({{ w.share_percentage }}%)</span
                     >
                   </div>
                 </div>
 
                 <!-- Capacity / Share Progress Bar -->
-                <div class="mt-2 h-2 w-full overflow-hidden rounded-full bg-gray-200">
+                <div class="mt-2.5 h-1.5 w-full overflow-hidden rounded-full bg-zinc-200/70">
                   <div
-                    class="h-full rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 transition-all duration-500"
+                    class="h-full rounded-full bg-zinc-900 transition-all duration-500"
                     :style="{ width: `${Math.min(100, Math.max(0, w.share_percentage))}%` }"
                   ></div>
                 </div>
 
-                <div class="mt-2 flex items-center justify-between text-[11px] text-gray-500">
+                <div class="mt-2 flex items-center justify-between text-[11px] text-zinc-500">
                   <span>Value at cost: {{ money(w.cost_value) }}</span>
                   <span>Retail value: {{ money(w.retail_value) }}</span>
                 </div>
@@ -968,10 +985,13 @@ onUnmounted(() => {
           </div>
 
           <div
-            class="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between text-xs text-gray-500"
+            class="mt-4 pt-3.5 border-t border-zinc-100 flex items-center justify-between text-xs text-zinc-500"
           >
             <span>{{ data.warehouses.length }} storage locations active</span>
-            <RouterLink to="/stock" class="font-semibold text-blue-600 hover:underline">
+            <RouterLink
+              to="/stock"
+              class="font-semibold text-zinc-700 hover:text-zinc-900 hover:underline"
+            >
               Inter-warehouse transfer &rarr;
             </RouterLink>
           </div>
@@ -979,17 +999,17 @@ onUnmounted(() => {
 
         <!-- Category Mix & Product Distribution Card -->
         <div
-          class="rounded-xl bg-white p-5 shadow-xs border border-gray-200/80 flex flex-col justify-between"
+          class="rounded-2xl bg-white p-5 sm:p-6 shadow-2xs border border-zinc-200/80 flex flex-col justify-between"
         >
           <div>
-            <div class="flex items-center justify-between pb-3 border-b border-gray-100">
+            <div class="flex items-center justify-between pb-3.5 border-b border-zinc-100">
               <div class="flex items-center gap-2">
                 <svg
-                  class="h-4 w-4 text-indigo-600"
+                  class="h-4 w-4 text-zinc-700"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
-                  stroke-width="2"
+                  stroke-width="1.8"
                 >
                   <path
                     stroke-linecap="round"
@@ -997,55 +1017,46 @@ onUnmounted(() => {
                     d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
                   />
                 </svg>
-                <h2 class="text-sm font-bold text-gray-900">Top Categories by Valuation</h2>
+                <h2 class="text-sm font-bold text-zinc-900">Top Categories by Valuation</h2>
               </div>
               <RouterLink
                 to="/categories"
-                class="text-xs font-semibold text-blue-600 hover:text-blue-800"
+                class="text-xs font-semibold text-zinc-600 hover:text-zinc-900"
               >
                 View All &rarr;
               </RouterLink>
             </div>
 
-            <div class="mt-4 space-y-4">
+            <div class="mt-4 space-y-3">
               <div
                 v-for="(cat, idx) in data.categories.slice(0, 5)"
                 :key="cat.category_id ?? idx"
-                class="rounded-lg border border-gray-100 p-3 bg-gray-50/40 hover:bg-gray-50 transition-colors"
+                class="rounded-xl border border-zinc-200/70 p-3 bg-zinc-50/50 hover:bg-zinc-50 transition-colors"
               >
                 <div class="flex items-center justify-between text-xs">
-                  <div class="font-semibold text-gray-900 flex items-center gap-2">
+                  <div class="font-semibold text-zinc-900 flex items-center gap-2">
                     <span>{{ cat.category_name }}</span>
-                    <span class="text-[11px] font-normal text-gray-400"
+                    <span class="text-[11px] font-normal text-zinc-400"
                       >({{ cat.products_count || 0 }} products)</span
                     >
                   </div>
                   <div class="text-right">
-                    <span class="font-bold text-gray-900">{{ money(cat.cost_value) }}</span>
-                    <span class="text-gray-400 ml-1.5 font-medium"
+                    <span class="font-bold text-zinc-900">{{ money(cat.cost_value) }}</span>
+                    <span class="text-zinc-400 ml-1.5 font-medium"
                       >({{ cat.share_percentage }}%)</span
                     >
                   </div>
                 </div>
 
                 <!-- Proportional Bar -->
-                <div class="mt-2 h-2 w-full overflow-hidden rounded-full bg-gray-200">
+                <div class="mt-2.5 h-1.5 w-full overflow-hidden rounded-full bg-zinc-200/70">
                   <div
-                    class="h-full rounded-full transition-all duration-500"
-                    :class="
-                      idx % 4 === 0
-                        ? 'bg-gradient-to-r from-emerald-500 to-teal-600'
-                        : idx % 4 === 1
-                          ? 'bg-gradient-to-r from-indigo-500 to-purple-600'
-                          : idx % 4 === 2
-                            ? 'bg-gradient-to-r from-blue-500 to-cyan-600'
-                            : 'bg-gradient-to-r from-amber-500 to-orange-600'
-                    "
+                    class="h-full rounded-full bg-zinc-800 transition-all duration-500"
                     :style="{ width: `${Math.min(100, Math.max(0, cat.share_percentage))}%` }"
                   ></div>
                 </div>
 
-                <div class="mt-2 flex items-center justify-between text-[11px] text-gray-500">
+                <div class="mt-2 flex items-center justify-between text-[11px] text-zinc-500">
                   <span>{{ (cat.units || 0).toLocaleString() }} units on shelf</span>
                   <span>Retail: {{ money(cat.retail_value) }}</span>
                 </div>
@@ -1054,7 +1065,7 @@ onUnmounted(() => {
           </div>
 
           <div
-            class="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between text-xs text-gray-500"
+            class="mt-4 pt-3.5 border-t border-zinc-100 flex items-center justify-between text-xs text-zinc-500"
           >
             <span
               >30-Day Velocity: +{{ data.metrics.movements_last_30_days.in_units }} / -{{
@@ -1062,7 +1073,10 @@ onUnmounted(() => {
               }}
               units</span
             >
-            <RouterLink to="/reports" class="font-semibold text-blue-600 hover:underline">
+            <RouterLink
+              to="/reports"
+              class="font-semibold text-zinc-700 hover:text-zinc-900 hover:underline"
+            >
               Full Valuation Report &rarr;
             </RouterLink>
           </div>
@@ -1075,25 +1089,25 @@ onUnmounted(() => {
       <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <!-- Tabbed Operations Table (Sales, Purchase, Movements) (2 cols) -->
         <div
-          class="lg:col-span-2 rounded-xl bg-white shadow-xs border border-gray-200/80 overflow-hidden"
+          class="lg:col-span-2 rounded-2xl bg-white shadow-2xs border border-zinc-200/80 overflow-hidden"
         >
           <div
-            class="flex items-center justify-between px-5 py-3.5 border-b border-gray-100 bg-gray-50/60"
+            class="flex items-center justify-between px-5 py-3.5 border-b border-zinc-100 bg-zinc-50/60"
           >
             <!-- Tabs -->
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-1.5 p-1 bg-zinc-100 rounded-xl">
               <button
                 type="button"
                 @click="activeTab = 'sales'"
-                class="rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors flex items-center gap-1.5"
+                class="rounded-lg px-3 py-1.5 text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer"
                 :class="
                   activeTab === 'sales'
-                    ? 'bg-white text-blue-700 shadow-2xs border border-gray-200'
-                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                    ? 'bg-white text-zinc-900 shadow-2xs'
+                    : 'text-zinc-500 hover:text-zinc-900'
                 "
               >
                 <span>Recent Sales</span>
-                <span class="rounded-full bg-blue-100 px-1.5 py-0.2 text-[10px] text-blue-700">
+                <span class="rounded-full bg-zinc-200/70 px-1.5 py-0.2 text-[10px] text-zinc-700">
                   {{ data.recent_sales_orders?.length || 0 }}
                 </span>
               </button>
@@ -1101,15 +1115,15 @@ onUnmounted(() => {
               <button
                 type="button"
                 @click="activeTab = 'purchases'"
-                class="rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors flex items-center gap-1.5"
+                class="rounded-lg px-3 py-1.5 text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer"
                 :class="
                   activeTab === 'purchases'
-                    ? 'bg-white text-indigo-700 shadow-2xs border border-gray-200'
-                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                    ? 'bg-white text-zinc-900 shadow-2xs'
+                    : 'text-zinc-500 hover:text-zinc-900'
                 "
               >
                 <span>Recent Purchases</span>
-                <span class="rounded-full bg-indigo-100 px-1.5 py-0.2 text-[10px] text-indigo-700">
+                <span class="rounded-full bg-zinc-200/70 px-1.5 py-0.2 text-[10px] text-zinc-700">
                   {{ data.recent_purchase_orders?.length || 0 }}
                 </span>
               </button>
@@ -1117,15 +1131,15 @@ onUnmounted(() => {
               <button
                 type="button"
                 @click="activeTab = 'movements'"
-                class="rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors flex items-center gap-1.5"
+                class="rounded-lg px-3 py-1.5 text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer"
                 :class="
                   activeTab === 'movements'
-                    ? 'bg-white text-gray-900 shadow-2xs border border-gray-200'
-                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                    ? 'bg-white text-zinc-900 shadow-2xs'
+                    : 'text-zinc-500 hover:text-zinc-900'
                 "
               >
                 <span>Stock Movements</span>
-                <span class="rounded-full bg-gray-200 px-1.5 py-0.2 text-[10px] text-gray-700">
+                <span class="rounded-full bg-zinc-200/70 px-1.5 py-0.2 text-[10px] text-zinc-700">
                   {{ data.recent_movements?.length || 0 }}
                 </span>
               </button>
@@ -1135,21 +1149,21 @@ onUnmounted(() => {
             <RouterLink
               v-if="activeTab === 'sales'"
               to="/sales-orders"
-              class="text-xs font-semibold text-blue-600 hover:text-blue-800"
+              class="text-xs font-semibold text-zinc-600 hover:text-zinc-900"
             >
               All Orders &rarr;
             </RouterLink>
             <RouterLink
               v-else-if="activeTab === 'purchases'"
               to="/purchase-orders"
-              class="text-xs font-semibold text-indigo-600 hover:text-indigo-800"
+              class="text-xs font-semibold text-zinc-600 hover:text-zinc-900"
             >
               All POs &rarr;
             </RouterLink>
             <RouterLink
               v-else
               to="/stock"
-              class="text-xs font-semibold text-gray-600 hover:text-gray-800"
+              class="text-xs font-semibold text-zinc-600 hover:text-zinc-900"
             >
               All Movements &rarr;
             </RouterLink>
@@ -1157,54 +1171,54 @@ onUnmounted(() => {
 
           <!-- TAB 1: SALES ORDERS TABLE -->
           <div v-if="activeTab === 'sales'" class="overflow-x-auto">
-            <table class="w-full text-left text-xs text-gray-600">
+            <table class="w-full text-left text-xs text-zinc-600">
               <thead
-                class="bg-gray-50/50 border-b border-gray-100 font-semibold uppercase tracking-wider text-gray-500"
+                class="bg-zinc-50/75 border-b border-zinc-100 font-semibold uppercase tracking-wider text-zinc-400 text-[11px]"
               >
                 <tr>
-                  <th scope="col" class="py-3 px-5">Order #</th>
-                  <th scope="col" class="py-3 px-4">Customer</th>
-                  <th scope="col" class="py-3 px-4">Date</th>
-                  <th scope="col" class="py-3 px-4">Status</th>
-                  <th scope="col" class="py-3 px-4 text-right">Total</th>
-                  <th scope="col" class="py-3 px-5 text-right">Actions</th>
+                  <th scope="col" class="py-2.5 px-5">Order #</th>
+                  <th scope="col" class="py-2.5 px-4">Customer</th>
+                  <th scope="col" class="py-2.5 px-4">Date</th>
+                  <th scope="col" class="py-2.5 px-4">Status</th>
+                  <th scope="col" class="py-2.5 px-4 text-right">Total</th>
+                  <th scope="col" class="py-2.5 px-5 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-gray-100">
+              <tbody class="divide-y divide-zinc-100">
                 <tr v-if="!data.recent_sales_orders || !data.recent_sales_orders.length">
-                  <td colspan="6" class="py-8 text-center text-gray-400">
+                  <td colspan="6" class="py-8 text-center text-zinc-400">
                     No sales orders created yet.
                   </td>
                 </tr>
                 <tr
                   v-for="so in data.recent_sales_orders"
                   :key="so.id"
-                  class="hover:bg-gray-50/70 transition-colors"
+                  class="hover:bg-zinc-50/60 transition-colors"
                 >
-                  <td class="py-3 px-5 font-semibold text-gray-900 font-mono">
+                  <td class="py-3 px-5 font-semibold text-zinc-900 font-mono">
                     {{ so.number }}
                   </td>
-                  <td class="py-3 px-4 font-medium text-gray-800">
+                  <td class="py-3 px-4 font-medium text-zinc-800">
                     {{ so.customer_name }}
                   </td>
-                  <td class="py-3 px-4 text-gray-500">
+                  <td class="py-3 px-4 text-zinc-500">
                     {{ formatDate(so.order_date) }}
                   </td>
                   <td class="py-3 px-4">
                     <span
                       class="inline-block rounded-full px-2 py-0.5 text-[10px] font-semibold capitalize"
-                      :class="salesStatusStyles[so.status] || 'bg-gray-100 text-gray-700'"
+                      :class="salesStatusStyles[so.status] || 'bg-zinc-100 text-zinc-700'"
                     >
                       {{ so.status?.replace('_', ' ') }}
                     </span>
                   </td>
-                  <td class="py-3 px-4 text-right font-bold text-gray-900">
+                  <td class="py-3 px-4 text-right font-bold text-zinc-900">
                     {{ money(so.total) }}
                   </td>
                   <td class="py-3 px-5 text-right">
                     <RouterLink
                       to="/sales-orders"
-                      class="text-blue-600 hover:text-blue-800 font-semibold text-[11px]"
+                      class="text-zinc-600 hover:text-zinc-900 font-semibold text-[11px]"
                     >
                       Open &rarr;
                     </RouterLink>
@@ -1216,54 +1230,54 @@ onUnmounted(() => {
 
           <!-- TAB 2: PURCHASE ORDERS TABLE -->
           <div v-if="activeTab === 'purchases'" class="overflow-x-auto">
-            <table class="w-full text-left text-xs text-gray-600">
+            <table class="w-full text-left text-xs text-zinc-600">
               <thead
-                class="bg-gray-50/50 border-b border-gray-100 font-semibold uppercase tracking-wider text-gray-500"
+                class="bg-zinc-50/75 border-b border-zinc-100 font-semibold uppercase tracking-wider text-zinc-400 text-[11px]"
               >
                 <tr>
-                  <th scope="col" class="py-3 px-5">PO Number</th>
-                  <th scope="col" class="py-3 px-4">Supplier</th>
-                  <th scope="col" class="py-3 px-4">Expected Date</th>
-                  <th scope="col" class="py-3 px-4">Status</th>
-                  <th scope="col" class="py-3 px-4 text-right">Total</th>
-                  <th scope="col" class="py-3 px-5 text-right">Actions</th>
+                  <th scope="col" class="py-2.5 px-5">PO Number</th>
+                  <th scope="col" class="py-2.5 px-4">Supplier</th>
+                  <th scope="col" class="py-2.5 px-4">Expected Date</th>
+                  <th scope="col" class="py-2.5 px-4">Status</th>
+                  <th scope="col" class="py-2.5 px-4 text-right">Total</th>
+                  <th scope="col" class="py-2.5 px-5 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-gray-100">
+              <tbody class="divide-y divide-zinc-100">
                 <tr v-if="!data.recent_purchase_orders || !data.recent_purchase_orders.length">
-                  <td colspan="6" class="py-8 text-center text-gray-400">
+                  <td colspan="6" class="py-8 text-center text-zinc-400">
                     No purchase orders recorded yet.
                   </td>
                 </tr>
                 <tr
                   v-for="po in data.recent_purchase_orders"
                   :key="po.id"
-                  class="hover:bg-gray-50/70 transition-colors"
+                  class="hover:bg-zinc-50/60 transition-colors"
                 >
-                  <td class="py-3 px-5 font-semibold text-gray-900 font-mono">
+                  <td class="py-3 px-5 font-semibold text-zinc-900 font-mono">
                     {{ po.number }}
                   </td>
-                  <td class="py-3 px-4 font-medium text-gray-800">
+                  <td class="py-3 px-4 font-medium text-zinc-800">
                     {{ po.supplier_name }}
                   </td>
-                  <td class="py-3 px-4 text-gray-500">
+                  <td class="py-3 px-4 text-zinc-500">
                     {{ formatDate(po.order_date) }}
                   </td>
                   <td class="py-3 px-4">
                     <span
                       class="inline-block rounded-full px-2 py-0.5 text-[10px] font-semibold capitalize"
-                      :class="purchaseStatusStyles[po.status] || 'bg-gray-100 text-gray-700'"
+                      :class="purchaseStatusStyles[po.status] || 'bg-zinc-100 text-zinc-700'"
                     >
                       {{ po.status?.replace('_', ' ') }}
                     </span>
                   </td>
-                  <td class="py-3 px-4 text-right font-bold text-gray-900">
+                  <td class="py-3 px-4 text-right font-bold text-zinc-900">
                     {{ money(po.total) }}
                   </td>
                   <td class="py-3 px-5 text-right">
                     <RouterLink
                       to="/purchase-orders"
-                      class="text-indigo-600 hover:text-indigo-800 font-semibold text-[11px]"
+                      class="text-zinc-600 hover:text-zinc-900 font-semibold text-[11px]"
                     >
                       Open &rarr;
                     </RouterLink>
@@ -1275,41 +1289,41 @@ onUnmounted(() => {
 
           <!-- TAB 3: STOCK MOVEMENTS TABLE -->
           <div v-if="activeTab === 'movements'" class="overflow-x-auto">
-            <table class="w-full text-left text-xs text-gray-600">
+            <table class="w-full text-left text-xs text-zinc-600">
               <thead
-                class="bg-gray-50/50 border-b border-gray-100 font-semibold uppercase tracking-wider text-gray-500"
+                class="bg-zinc-50/75 border-b border-zinc-100 font-semibold uppercase tracking-wider text-zinc-400 text-[11px]"
               >
                 <tr>
-                  <th scope="col" class="py-3 px-5">Product & SKU</th>
-                  <th scope="col" class="py-3 px-4">Warehouse</th>
-                  <th scope="col" class="py-3 px-4">Type</th>
-                  <th scope="col" class="py-3 px-4 text-right">Quantity</th>
-                  <th scope="col" class="py-3 px-4 text-right">Balance</th>
-                  <th scope="col" class="py-3 px-5 text-right">Time</th>
+                  <th scope="col" class="py-2.5 px-5">Product & SKU</th>
+                  <th scope="col" class="py-2.5 px-4">Warehouse</th>
+                  <th scope="col" class="py-2.5 px-4">Type</th>
+                  <th scope="col" class="py-2.5 px-4 text-right">Quantity</th>
+                  <th scope="col" class="py-2.5 px-4 text-right">Balance</th>
+                  <th scope="col" class="py-2.5 px-5 text-right">Time</th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-gray-100">
+              <tbody class="divide-y divide-zinc-100">
                 <tr v-if="!data.recent_movements || !data.recent_movements.length">
-                  <td colspan="6" class="py-8 text-center text-gray-400">
+                  <td colspan="6" class="py-8 text-center text-zinc-400">
                     No stock movements recorded yet.
                   </td>
                 </tr>
                 <tr
                   v-for="m in data.recent_movements"
                   :key="m.id"
-                  class="hover:bg-gray-50/70 transition-colors"
+                  class="hover:bg-zinc-50/60 transition-colors"
                 >
-                  <td class="py-3 px-5 font-medium text-gray-900">
+                  <td class="py-3 px-5 font-medium text-zinc-900">
                     <div>{{ m.product_name }}</div>
-                    <div class="text-[11px] font-mono text-gray-400">{{ m.product_sku }}</div>
+                    <div class="text-[11px] font-mono text-zinc-400">{{ m.product_sku }}</div>
                   </td>
-                  <td class="py-3 px-4 text-gray-600">
+                  <td class="py-3 px-4 text-zinc-600">
                     {{ m.warehouse_name }}
                   </td>
                   <td class="py-3 px-4">
                     <span
                       class="inline-block rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider"
-                      :class="movementStyles[m.type] || 'bg-gray-100 text-gray-700'"
+                      :class="movementStyles[m.type] || 'bg-zinc-100 text-zinc-700'"
                     >
                       {{ m.type?.replace('_', ' ') }}
                     </span>
@@ -1320,10 +1334,10 @@ onUnmounted(() => {
                   >
                     {{ m.quantity > 0 ? `+${m.quantity}` : m.quantity }}
                   </td>
-                  <td class="py-3 px-4 text-right font-medium text-gray-800">
+                  <td class="py-3 px-4 text-right font-medium text-zinc-800">
                     {{ m.balance_after }}
                   </td>
-                  <td class="py-3 px-5 text-right text-gray-400">
+                  <td class="py-3 px-5 text-right text-zinc-400">
                     {{ timeAgo(m.created_at) }}
                   </td>
                 </tr>
@@ -1332,19 +1346,19 @@ onUnmounted(() => {
           </div>
         </div>
 
-        <!-- Live Activity Stream / Audit Trail (1 col) -->
+        <!-- Live Activity Stream / Audit Feed (1 col) -->
         <div
-          class="rounded-xl bg-white shadow-xs border border-gray-200/80 p-5 flex flex-col justify-between"
+          class="rounded-2xl bg-white shadow-2xs border border-zinc-200/80 p-5 sm:p-6 flex flex-col justify-between"
         >
           <div>
-            <div class="flex items-center justify-between pb-3 border-b border-gray-100">
+            <div class="flex items-center justify-between pb-3.5 border-b border-zinc-100">
               <div class="flex items-center gap-2">
                 <svg
-                  class="h-4 w-4 text-purple-600"
+                  class="h-4 w-4 text-zinc-700"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
-                  stroke-width="2"
+                  stroke-width="1.8"
                 >
                   <path
                     stroke-linecap="round"
@@ -1352,12 +1366,12 @@ onUnmounted(() => {
                     d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                   />
                 </svg>
-                <h2 class="text-sm font-bold text-gray-900">Live Activity Feed</h2>
+                <h2 class="text-sm font-bold text-zinc-900">Live Activity Feed</h2>
               </div>
               <RouterLink
                 v-if="canViewActivity"
                 to="/activity"
-                class="text-xs font-semibold text-purple-600 hover:text-purple-800"
+                class="text-xs font-semibold text-zinc-600 hover:text-zinc-900"
               >
                 Full Log &rarr;
               </RouterLink>
@@ -1366,32 +1380,32 @@ onUnmounted(() => {
             <!-- Activity List (Admin & Manager) -->
             <div
               v-if="data.recent_activities && data.recent_activities.length"
-              class="mt-4 space-y-3"
+              class="mt-4 space-y-2.5"
             >
               <div
                 v-for="act in data.recent_activities"
                 :key="act.id"
-                class="flex items-start gap-3 rounded-lg border border-gray-100 p-2.5 bg-gray-50/40 hover:bg-gray-50 transition-colors text-xs"
+                class="flex items-start gap-3 rounded-xl border border-zinc-200/70 p-2.5 bg-zinc-50/50 hover:bg-zinc-50 transition-colors text-xs"
               >
                 <div
-                  class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-tr from-purple-600 to-indigo-600 text-white font-semibold text-[10px]"
+                  class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-zinc-900 text-white font-semibold text-[10px]"
                 >
                   {{ (act.user_name || 'U').slice(0, 2).toUpperCase() }}
                 </div>
                 <div class="flex-1 min-w-0">
                   <div class="flex items-center justify-between gap-1">
-                    <span class="font-semibold text-gray-900 truncate">{{ act.user_name }}</span>
+                    <span class="font-semibold text-zinc-900 truncate">{{ act.user_name }}</span>
                     <span
                       class="rounded px-1.5 py-0.2 text-[9px] font-semibold uppercase tracking-wider shrink-0"
-                      :class="activityStyles[act.action] || 'bg-gray-100 text-gray-700'"
+                      :class="activityStyles[act.action] || 'bg-zinc-100 text-zinc-700'"
                     >
                       {{ act.action?.replace('_', ' ') }}
                     </span>
                   </div>
-                  <p class="mt-0.5 text-[11px] text-gray-600 line-clamp-2">
+                  <p class="mt-0.5 text-[11px] text-zinc-600 line-clamp-2">
                     {{ act.description }}
                   </p>
-                  <p class="mt-1 text-[10px] text-gray-400">
+                  <p class="mt-1 text-[10px] text-zinc-400">
                     {{ timeAgo(act.created_at) }}
                   </p>
                 </div>
@@ -1401,22 +1415,22 @@ onUnmounted(() => {
             <!-- Empty / Staff Activity Card -->
             <div
               v-else
-              class="mt-6 text-center py-6 px-4 bg-gray-50 rounded-xl border border-gray-100"
+              class="mt-6 text-center py-6 px-4 bg-zinc-50 rounded-xl border border-zinc-100"
             >
               <div
-                class="flex h-10 w-10 mx-auto items-center justify-center rounded-full bg-purple-50 text-purple-600"
+                class="flex h-9 w-9 mx-auto items-center justify-center rounded-full bg-zinc-100 text-zinc-600"
               >
-                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path
                     stroke-linecap="round"
                     stroke-linejoin="round"
-                    stroke-width="2"
+                    stroke-width="1.8"
                     d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                   />
                 </svg>
               </div>
-              <p class="mt-2 text-xs font-semibold text-gray-800">Operational Log</p>
-              <p class="mt-1 text-[11px] text-gray-500">
+              <p class="mt-2 text-xs font-semibold text-zinc-800">Operational Log</p>
+              <p class="mt-1 text-[11px] text-zinc-500">
                 System events and transaction histories are continuously captured for operational
                 audits.
               </p>
@@ -1425,16 +1439,16 @@ onUnmounted(() => {
 
           <!-- Bottom quick hint / tip -->
           <div
-            class="mt-4 pt-3 border-t border-gray-100 text-[11px] text-gray-500 flex items-center justify-between"
+            class="mt-4 pt-3 border-t border-zinc-100 text-[11px] text-zinc-500 flex items-center justify-between"
           >
             <span
               >Tip: Press
-              <kbd class="px-1 border border-gray-200 rounded font-mono text-[10px] bg-gray-50"
+              <kbd class="px-1 border border-zinc-200 rounded font-mono text-[10px] bg-zinc-50"
                 >/</kbd
               >
               anywhere to scan items</span
             >
-            <span class="text-emerald-600 font-medium">● Connected</span>
+            <span class="text-emerald-600 font-medium text-[11px]">● Connected</span>
           </div>
         </div>
       </div>
@@ -1445,26 +1459,26 @@ onUnmounted(() => {
     <!-- ============================================================ -->
     <div
       v-if="showScanModal"
-      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-xs animate-in fade-in duration-200"
+      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-950/40 backdrop-blur-xs animate-in fade-in duration-200"
       @click.self="showScanModal = false"
     >
       <div
-        class="w-full max-w-lg rounded-2xl bg-white shadow-2xl border border-gray-200 p-6 space-y-4"
+        class="w-full max-w-lg rounded-2xl bg-white shadow-xl border border-zinc-200/80 p-6 space-y-4"
         role="dialog"
         aria-modal="true"
         aria-labelledby="scan-modal-title"
       >
-        <div class="flex items-center justify-between pb-3 border-b border-gray-100">
+        <div class="flex items-center justify-between pb-3.5 border-b border-zinc-100">
           <div class="flex items-center gap-2.5">
             <div
-              class="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-50 text-blue-600"
+              class="flex h-9 w-9 items-center justify-center rounded-xl bg-zinc-100 text-zinc-700"
             >
               <svg
                 class="h-5 w-5"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
-                stroke-width="2"
+                stroke-width="1.8"
               >
                 <path
                   stroke-linecap="round"
@@ -1474,10 +1488,10 @@ onUnmounted(() => {
               </svg>
             </div>
             <div>
-              <h2 id="scan-modal-title" class="text-base font-bold text-gray-900">
+              <h2 id="scan-modal-title" class="text-sm font-bold text-zinc-900">
                 Quick Barcode / SKU Scanner
               </h2>
-              <p class="text-xs text-gray-500">
+              <p class="text-xs text-zinc-500">
                 Scan hardware barcode or type SKU / code and press Enter
               </p>
             </div>
@@ -1485,11 +1499,11 @@ onUnmounted(() => {
           <button
             type="button"
             @click="showScanModal = false"
-            class="rounded-lg p-1.5 text-gray-400 hover:text-gray-700 hover:bg-gray-100"
+            class="rounded-lg p-1.5 text-zinc-400 hover:text-zinc-700 hover:bg-zinc-100 cursor-pointer transition-colors"
             aria-label="Close scanner"
           >
             <svg
-              class="h-5 w-5"
+              class="h-4 w-4"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -1510,10 +1524,10 @@ onUnmounted(() => {
 
         <div
           v-if="scanLoading"
-          class="py-6 text-center text-xs text-gray-500 flex items-center justify-center gap-2"
+          class="py-6 text-center text-xs text-zinc-500 flex items-center justify-center gap-2"
         >
           <svg
-            class="h-4 w-4 animate-spin text-blue-600"
+            class="h-4 w-4 animate-spin text-zinc-900"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -1531,7 +1545,7 @@ onUnmounted(() => {
         <!-- Lookup Error -->
         <p
           v-if="scanError"
-          class="rounded-lg bg-red-50 p-3 text-xs text-red-700 border border-red-200"
+          class="rounded-xl bg-rose-50 p-3 text-xs text-rose-700 border border-rose-200/70"
         >
           {{ scanError }}
         </p>
@@ -1539,27 +1553,27 @@ onUnmounted(() => {
         <!-- Matched Product Card -->
         <div
           v-if="scannedProduct"
-          class="rounded-xl border border-gray-200 bg-gray-50/70 p-4 space-y-3"
+          class="rounded-xl border border-zinc-200/80 bg-zinc-50/70 p-4 space-y-3"
         >
           <div class="flex items-start justify-between">
             <div>
               <span
-                class="rounded bg-blue-100 px-2 py-0.5 text-[10px] font-bold uppercase text-blue-800"
+                class="rounded-full bg-zinc-900 text-white px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider"
               >
                 Match Found
               </span>
-              <h3 class="mt-1 text-sm font-bold text-gray-900">{{ scannedProduct.name }}</h3>
-              <p class="text-xs font-mono text-gray-500">
+              <h3 class="mt-1.5 text-sm font-bold text-zinc-900">{{ scannedProduct.name }}</h3>
+              <p class="text-xs font-mono text-zinc-500 mt-0.5">
                 SKU: {{ scannedProduct.sku }}
                 <span v-if="scannedProduct.barcode"> | Barcode: {{ scannedProduct.barcode }}</span>
               </p>
             </div>
             <span
-              class="rounded-full px-2.5 py-0.5 text-xs font-bold"
+              class="rounded-full px-2.5 py-0.5 text-xs font-semibold"
               :class="
                 scannedProduct.stock_total > 0
-                  ? 'bg-emerald-100 text-emerald-800'
-                  : 'bg-rose-100 text-rose-800'
+                  ? 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-600/20'
+                  : 'bg-rose-50 text-rose-700 ring-1 ring-rose-600/20'
               "
             >
               {{ scannedProduct.stock_total }} {{ scannedProduct.unit }} in stock
@@ -1567,21 +1581,21 @@ onUnmounted(() => {
           </div>
 
           <div
-            class="grid grid-cols-3 gap-2 rounded-lg bg-white p-2.5 border border-gray-100 text-xs"
+            class="grid grid-cols-3 gap-2 rounded-lg bg-white p-2.5 border border-zinc-200/70 text-xs"
           >
             <div>
-              <p class="text-[10px] uppercase text-gray-400">Category</p>
-              <p class="font-semibold text-gray-800">
+              <p class="text-[10px] uppercase font-semibold text-zinc-400">Category</p>
+              <p class="font-medium text-zinc-800 mt-0.5">
                 {{ scannedProduct.category?.name || 'Uncategorised' }}
               </p>
             </div>
             <div>
-              <p class="text-[10px] uppercase text-gray-400">Cost Price</p>
-              <p class="font-semibold text-gray-800">{{ money(scannedProduct.cost_price) }}</p>
+              <p class="text-[10px] uppercase font-semibold text-zinc-400">Cost Price</p>
+              <p class="font-medium text-zinc-800 mt-0.5">{{ money(scannedProduct.cost_price) }}</p>
             </div>
             <div>
-              <p class="text-[10px] uppercase text-gray-400">Sell Price</p>
-              <p class="font-semibold text-gray-800">{{ money(scannedProduct.sell_price) }}</p>
+              <p class="text-[10px] uppercase font-semibold text-zinc-400">Sell Price</p>
+              <p class="font-medium text-zinc-800 mt-0.5">{{ money(scannedProduct.sell_price) }}</p>
             </div>
           </div>
 
@@ -1589,7 +1603,7 @@ onUnmounted(() => {
             <button
               type="button"
               @click="inspectScannedProduct"
-              class="rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-blue-700 transition-colors shadow-xs"
+              class="rounded-xl bg-zinc-900 px-3.5 py-2 text-xs font-semibold text-white hover:bg-zinc-800 transition-colors shadow-2xs cursor-pointer"
             >
               Inspect Product Full Details &rarr;
             </button>
